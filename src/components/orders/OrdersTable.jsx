@@ -29,7 +29,9 @@ import { MoreHorizontal, MessageSquare, Printer, ExternalLink, ChevronLeft, Chev
 import EditOrderModal from './EditOrderModal'; // You'll need to create this component
 
 const internalStatuses = [
-  "Created", "Alerted","Confirmed","Cancelled", "Deleted"
+  "Created", "No Response", "Injoignable", "Faux numéro", "Confirmed",
+  "Pick Listed", "Packed", "Ready to Ship", "Shipped To Courier",
+  "Delivered", "Returned", "Cancelled", "Deleted"
 ];
 const alertReasons = ["No Response", "Injoignable", "Faux numéro", "Client Cancelled"];
 const couriers = ["ZR Express", "Maystro", "Yalidine", "Noest Express"];
