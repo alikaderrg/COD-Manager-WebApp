@@ -1,168 +1,89 @@
-
-import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
+import React, { useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ScrollArea } from "@/components/ui/scroll-area"; // Now exists
-import { useToast } from "@/components/ui/use-toast";
-import { ExternalLink } from 'lucide-react';
-import StatusBadge from './StatusBadge';
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
-// Mock Function to get orders eligible for export (Confirmed or Packed)
-// In reality, this would likely filter the main orders list based on status
-const getExportableOrders = (allOrders) => {
-    return allOrders.filter(order =>
-        (order.internalStatus === 'Confirmed' || order.internalStatus === 'Packed') && order.exportStatus !== 'Exported'
-    );
-};
+export default function ExportCourierDialog({ allOrders = [], onOrdersExported }) {
+  const [open, setOpen] = React.useState(false);
 
-
-const ExportCourierDialog = ({ allOrders = [], onOrdersExported }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [exportableOrders, setExportableOrders] = useState([]);
-  const [pendingExport, setPendingExport] = useState([]);
-  const [exportedList, setExportedList] = useState([]); // Orders successfully exported in this session
-  const [trackingInputs, setTrackingInputs] = useState({});
-  const { toast } = useToast();
-
-  useEffect(() => {
-    if (isOpen) {
-      const ordersToExport = getExportableOrders(allOrders);
-      setExportableOrders(ordersToExport);
-      setPendingExport(ordersToExport.map(o => o.id)); // Initially, all are pending
-      setExportedList([]);
-      setTrackingInputs({}); // Reset inputs on open
-    }
-  }, [isOpen, allOrders]);
-
-  const handleTrackingChange = (orderId, trackingId) => {
-    setTrackingInputs(prev => ({ ...prev, [orderId]: trackingId }));
-  };
-
-  const handleExportOrder = (orderId) => {
-      const trackingId = trackingInputs[orderId];
-      if (!trackingId) {
-          toast({ title: "Missing Tracking ID", description: `Please enter a tracking ID for order ${orderId}.`, variant: "destructive" });
-          return;
-      }
-
-      // --- Placeholder for actual API call to courier ---
-      console.log(`Exporting Order ${orderId} with Tracking ID: ${trackingId}`);
-      // --- End Placeholder ---
-
-      // Simulate successful export
-      setPendingExport(prev => prev.filter(id => id !== orderId));
-      setExportedList(prev => [...prev, orderId]);
-      toast({ title: "Order Exported", description: `Order ${orderId} marked as exported.` });
-
-      // Update the main order list (via callback)
-      if (onOrdersExported) {
-          onOrdersExported(orderId, trackingId);
-      }
-  };
-
-  const handleBulkExport = () => {
-     let successCount = 0;
-     let failCount = 0;
-     pendingExport.forEach(orderId => {
-        const trackingId = trackingInputs[orderId];
-        if (trackingId) {
-             // --- Placeholder for actual API call ---
-             console.log(`Bulk Exporting Order ${orderId} with Tracking ID: ${trackingId}`);
-             // --- End Placeholder ---
-             successCount++;
-             setExportedList(prev => [...prev, orderId]);
-             if (onOrdersExported) {
-                onOrdersExported(orderId, trackingId);
-             }
-        } else {
-            failCount++;
-        }
-     });
-
-     setPendingExport([]); // Clear pending list after attempt
-
-     if (successCount > 0) {
-        toast({ title: "Bulk Export Complete", description: `${successCount} orders exported.` });
-     }
-     if (failCount > 0) {
-         toast({ title: "Bulk Export Incomplete", description: `${failCount} orders skipped due to missing tracking IDs.`, variant: "destructive" });
-     }
-  }
-
-  const renderOrderList = (orderIds, title) => (
-    <div className="mb-4">
-        <h4 className="font-semibold mb-2 text-sm">{title} ({orderIds.length})</h4>
-         <ScrollArea className="h-40 border rounded-md p-2">
-         <div className="space-y-2">
-            {orderIds.length > 0 ? orderIds.map(orderId => {
-                const order = exportableOrders.find(o => o.id === orderId);
-                if (!order) return null;
-                const isPending = pendingExport.includes(orderId);
-                return (
-                <div key={orderId} className="flex items-center justify-between text-xs p-1 bg-muted/50 rounded">
-                    <span>ID: {order.id} ({order.customerName})</span>
-                    {isPending ? (
-                        <div className="flex items-center gap-1">
-                             <Input
-                                type="text"
-                                placeholder="Tracking ID"
-                                className="h-6 text-xs w-24"
-                                value={trackingInputs[orderId] || ''}
-                                onChange={(e) => handleTrackingChange(orderId, e.target.value)}
-                             />
-                            <Button size="sm" variant="outline" className="h-6 px-1.5" onClick={() => handleExportOrder(orderId)} title="Export This Order">
-                                <ExternalLink size={12}/>
-                            </Button>
-                        </div>
-                    ) : (
-                       <span className="text-green-600 font-medium">Exported ({trackingInputs[orderId]})</span>
-                    )}
-                </div>
-                );
-            }) : <p className="text-xs text-muted-foreground">No orders in this list.</p>}
-        </div>
-         </ScrollArea>
-    </div>
+  const pendingExport = useMemo(
+    () => allOrders.filter(o => o.exportStatus !== 'Exported' && ['Confirmed', 'Packed'].includes(o.internalStatus)),
+    [allOrders]
   );
+
+  const exportedThisSession = useMemo(
+    () => allOrders.filter(o => o.exportStatus === 'Exported'),
+    [allOrders]
+  );
+
+  const handleExportAll = () => {
+    pendingExport.forEach(order => {
+      // Simulate fetching tracking ID from courier API here
+      const fakeTrackingId = `TRK${Math.floor(Math.random() * 1000000)}`;
+      onOrdersExported(order.id, fakeTrackingId);
+    });
+    setOpen(false);
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">
-            <ExternalLink className="mr-2 h-4 w-4" /> Export to Courier
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Export Orders to Courier</DialogTitle>
-          <DialogDescription>
-            Enter tracking IDs and export confirmed/packed orders.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="py-4 max-h-[60vh] overflow-y-auto">
-            {renderOrderList(pendingExport, "Pending Export")}
-            {renderOrderList(exportedList, "Exported in this Session")}
-        </div>
-        <DialogFooter>
-            <Button variant="secondary" onClick={() => setIsOpen(false)}>Close</Button>
-            <Button onClick={handleBulkExport} disabled={pendingExport.length === 0}>
-                Export All Pending
-            </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>Export to Courier</Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Export Orders to Courier</DialogTitle>
+            <p className="text-sm text-muted-foreground">This will automatically assign tracking IDs from courier system.</p>
+          </DialogHeader>
 
-export default ExportCourierDialog;
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            <div>
+              <h4 className="text-sm font-medium mb-2">Pending Export ({pendingExport.length})</h4>
+              {pendingExport.length > 0 ? (
+                <ul className="space-y-2">
+                  {pendingExport.map((order) => (
+                    <li key={order.id} className="flex items-center justify-between border rounded px-3 py-2 bg-muted">
+                      <span className="text-sm">ID: <strong>{order.id}</strong> ({order.customerName})</span>
+                      <Badge variant="secondary">Will fetch tracking ID</Badge>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground">No orders pending export.</p>
+              )}
+            </div>
+
+            <div>
+              <h4 className="text-sm font-medium mb-2">Exported in this Session ({exportedThisSession.length})</h4>
+              {exportedThisSession.length > 0 ? (
+                <ul className="space-y-2">
+                  {exportedThisSession.map((order) => (
+                    <li key={order.id} className="flex items-center justify-between border rounded px-3 py-2">
+                      <span className="text-sm">{order.id} ({order.customerName})</span>
+                      <span className="text-xs text-muted-foreground">{order.trackingId || 'Fetching...'}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground">No orders in this list.</p>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+            <Button onClick={handleExportAll} disabled={pendingExport.length === 0}>Export All Pending</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}

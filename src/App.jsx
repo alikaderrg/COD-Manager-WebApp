@@ -28,6 +28,13 @@ import ProductInventoryOverview from '@/pages/ProductInventory/Overview';
 import AccountingOverview from '@/pages/Accounting/Overview';
 import HROverview from '@/pages/HR/Overview';
 import SettingsControlPanel from '@/pages/Settings/ControlPanel';
+import Profile from '@/pages/Settings/Profile';
+import StoreIntegration from '@/pages/Settings/StoreIntegration';
+import CourierIntegration from '@/pages/Settings/CourierIntegration';
+import WhatsAppIntegration from '@/pages/Settings/WhatsAppIntegration';
+import AppPreferences from '@/pages/Settings/AppPreferences';
+import Plans from '@/pages/Settings/Plans';
+import Logout from '@/pages/Settings/Logout';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -98,7 +105,14 @@ function App() {
               <Route path="/inventory" element={<ProductInventoryOverview />} />
               <Route path="/accounting" element={<AccountingOverview />} />
               <Route path="/hr" element={<HROverview />} />
-              <Route path="/settings" element={<SettingsControlPanel />} />
+              <Route path="/settings/*" element={<SettingsControlPanel />} />
+              <Route path="/settings/profile" element={<Profile />} />
+              <Route path="/settings/store" element={<StoreIntegration />} />
+              <Route path="/settings/courier" element={<CourierIntegration />} />
+              <Route path="/settings/whatsapp" element={<WhatsAppIntegration />} />
+              <Route path="/settings/app" element={<AppPreferences />} />
+              <Route path="/settings/plans" element={<Plans />} />
+              <Route path="/settings/logout" element={<Logout />} />
             </Routes>
           </AnimatePresence>
         </main>
