@@ -9,13 +9,13 @@ import {
   CreditCard,
   LogOut,
 } from 'lucide-react';
-import Profile from '@/components/settings/Profile';
-import StoreIntegration from '@/components/settings/StoreIntegration';
-import CourierIntegration from '@/components/settings/CourierIntegration';
-import WhatsAppIntegration from '@/components/settings/WhatsAppIntegration';
-import AppPreferences from '@/components/settings/AppPreferences';
-import Plans from '@/components/settings/Plans';
-import Logout from '@/components/settings/Logout';
+import Profile from './Profile';
+import StoreIntegration from './StoreIntegration';
+import CourierIntegration from './CourierIntegration';
+import WhatsAppIntegration from './WhatsAppIntegration';
+import AppPreferences from './AppPreferences';
+import Plans from './Plans';
+import Logout from './Logout';
 
 const navItems = [
   { path: 'profile', label: 'Profile / Store Info', icon: <UserCog size={18} /> },
