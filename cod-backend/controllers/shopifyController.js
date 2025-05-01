@@ -9,7 +9,7 @@ export async function testShopifyConnection(req, res) {
   }
 
   try {
-    const response = await axios.get(`https://${domain}/admin/api/2023-10/shop.json`, {
+    const response = await axios.get(`https://${domain}/admin/api/2023-10/products.json`, {
       headers: {
         'X-Shopify-Access-Token': token,
         'Content-Type': 'application/json',
