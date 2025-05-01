@@ -5,6 +5,7 @@ import { useToast } from '@/components/ui/use-toast';
 import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const endpoint = `${baseURL.replace(/\/$/, '')}/api/shopify/test`;
 
 export default function StoreIntegration() {
   const { toast } = useToast();
@@ -16,7 +17,7 @@ export default function StoreIntegration() {
   const handleTestConnection = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${baseURL}/api/shopify/test`, {
+      const response = await axios.post(endpoint, {
         domain,
         token,
       });
@@ -30,8 +31,8 @@ export default function StoreIntegration() {
         });
       } else {
         toast({
-          title: '❌ Connection failed',
-          description: 'No product data received.',
+          title: '❌ No products found',
+          description: 'Your store responded, but it returned no product data.',
         });
       }
     } catch (err) {
