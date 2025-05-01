@@ -5,7 +5,7 @@ import { testShopifyConnection } from '../controllers/shopifyController.js';
 
 const router = express.Router();
 
-// Test connection to Shopify API
+// POST /api/shopify/test
 router.post('/test', testShopifyConnection);
 
 export default router;
