@@ -1,8 +1,66 @@
+import React, { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import axios from 'axios';
+
 export default function StoreIntegration() {
-    return (
+  const { toast } = useToast();
+  const [domain, setDomain] = useState('');
+  const [token, setToken] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [shopInfo, setShopInfo] = useState(null);
+
+  const handleTestConnection = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post('http://localhost:5000/api/shopify/test', {
+        domain,
+        token,
+      });
+      setShopInfo(response.data.shop);
+      toast({ title: '✅ Connected to Shopify!', description: `Store: ${response.data.shop.name}` });
+    } catch (err) {
+      toast({ title: '❌ Connection failed', description: err.response?.data?.error || err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-xl space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-4">Store Integration</h2>
-        <p className="text-muted-foreground">This section will allow integration with Shopify and other eCommerce platforms.</p>
+        <h2 className="text-2xl font-bold mb-2">Store Integration</h2>
+        <p className="text-muted-foreground text-sm mb-4">Connect your Shopify store to sync orders and products.</p>
+
+        <label className="block mb-2 font-medium">Shopify Store Domain</label>
+        <Input
+          placeholder="your-store.myshopify.com"
+          value={domain}
+          onChange={(e) => setDomain(e.target.value)}
+        />
+
+        <label className="block mt-4 mb-2 font-medium">Access Token</label>
+        <Input
+          placeholder="shpat_xxx..."
+          value={token}
+          onChange={(e) => setToken(e.target.value)}
+          type="password"
+        />
+
+        <Button className="mt-4" onClick={handleTestConnection} disabled={loading || !domain || !token}>
+          {loading ? 'Testing...' : 'Test Connection'}
+        </Button>
+
+        {shopInfo && (
+          <div className="mt-6 p-4 border rounded bg-muted">
+            <h4 className="font-medium">Connected Store:</h4>
+            <p className="text-sm">Name: {shopInfo.name}</p>
+            <p className="text-sm">Domain: {shopInfo.myshopify_domain}</p>
+            <p className="text-sm">Email: {shopInfo.email}</p>
+          </div>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
+}
