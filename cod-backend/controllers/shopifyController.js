@@ -16,13 +16,19 @@ export async function testShopifyConnection(req, res) {
       },
     });
 
-    if (!response.data?.products) {
+    const products = response.data.products;
+    if (!products || products.length === 0) {
       return res.status(404).json({ error: 'No products found or invalid token' });
     }
 
-    return res.status(200).json({ success: true, sample: response.data.products.slice(0, 1) });
+    return res.status(200).json({
+      success: true,
+      sample: products.slice(0, 1),
+    });
   } catch (error) {
     console.error('Shopify API Error:', error?.response?.data || error.message);
-    return res.status(401).json({ error: 'Invalid Shopify credentials or domain' });
+    return res.status(401).json({
+      error: 'Invalid Shopify credentials, store domain, or token',
+    });
   }
 }

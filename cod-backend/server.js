@@ -15,18 +15,18 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Routes
 app.use('/api/shopify', shopifyRoutes);
 
-// Default Route
+// Default Test Route
 app.get('/', (req, res) => {
   res.send('📦 COD Manager API is running');
 });
 
-// 404 Handler
+// 404 fallback
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
