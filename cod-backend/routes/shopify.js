@@ -13,4 +13,4 @@ router.get('/ping', (req, res) => {
 });
 
 export default router;
-s
+
