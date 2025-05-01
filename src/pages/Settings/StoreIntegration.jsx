@@ -16,15 +16,24 @@ export default function StoreIntegration() {
   const handleTestConnection = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`$import.meta.env.VITE_API_URL}/api/shopify/test`, {
+      const response = await axios.post(`${baseURL}/api/shopify/test`, {
         domain,
         token,
       });
-      setShopInfo(response.data.shop);
-      toast({
-        title: '✅ Connected to Shopify!',
-        description: `Store: ${response.data.shop.name}`,
-      });
+
+      const product = response.data.sample?.[0];
+      if (product) {
+        setShopInfo(product);
+        toast({
+          title: '✅ Connected to Shopify!',
+          description: `Sample Product: ${product.title}`,
+        });
+      } else {
+        toast({
+          title: '❌ Connection failed',
+          description: 'No product data received.',
+        });
+      }
     } catch (err) {
       const msg = err.response?.data?.error || err.message || 'Unknown error';
       toast({ title: '❌ Connection failed', description: msg });
@@ -66,10 +75,12 @@ export default function StoreIntegration() {
 
         {shopInfo && (
           <div className="mt-6 p-4 border rounded bg-muted">
-            <h4 className="font-medium">Connected Store:</h4>
-            <p className="text-sm">Name: {shopInfo.name}</p>
-            <p className="text-sm">Domain: {shopInfo.myshopify_domain}</p>
-            <p className="text-sm">Email: {shopInfo.email}</p>
+            <h4 className="font-medium">Connected Sample Product:</h4>
+            <p className="text-sm">Title: {shopInfo.title}</p>
+            <p className="text-sm">ID: {shopInfo.id}</p>
+            {shopInfo.variants?.length > 0 && (
+              <p className="text-sm">Variant: {shopInfo.variants[0].title}</p>
+            )}
           </div>
         )}
       </div>
