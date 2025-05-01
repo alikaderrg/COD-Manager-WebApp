@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import axios from 'axios';
 
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function StoreIntegration() {
   const { toast } = useToast();
   const [domain, setDomain] = useState('');
@@ -14,14 +16,18 @@ export default function StoreIntegration() {
   const handleTestConnection = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/shopify/test', {
+      const response = await axios.post(`${baseURL}/api/shopify/test`, {
         domain,
         token,
       });
       setShopInfo(response.data.shop);
-      toast({ title: '✅ Connected to Shopify!', description: `Store: ${response.data.shop.name}` });
+      toast({
+        title: '✅ Connected to Shopify!',
+        description: `Store: ${response.data.shop.name}`,
+      });
     } catch (err) {
-      toast({ title: '❌ Connection failed', description: err.response?.data?.error || err.message });
+      const msg = err.response?.data?.error || err.message || 'Unknown error';
+      toast({ title: '❌ Connection failed', description: msg });
     } finally {
       setLoading(false);
     }
@@ -31,7 +37,9 @@ export default function StoreIntegration() {
     <div className="max-w-xl space-y-6">
       <div>
         <h2 className="text-2xl font-bold mb-2">Store Integration</h2>
-        <p className="text-muted-foreground text-sm mb-4">Connect your Shopify store to sync orders and products.</p>
+        <p className="text-muted-foreground text-sm mb-4">
+          Connect your Shopify store to sync orders and products.
+        </p>
 
         <label className="block mb-2 font-medium">Shopify Store Domain</label>
         <Input
@@ -48,7 +56,11 @@ export default function StoreIntegration() {
           type="password"
         />
 
-        <Button className="mt-4" onClick={handleTestConnection} disabled={loading || !domain || !token}>
+        <Button
+          className="mt-4"
+          onClick={handleTestConnection}
+          disabled={loading || !domain || !token}
+        >
           {loading ? 'Testing...' : 'Test Connection'}
         </Button>
 
