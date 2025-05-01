@@ -16,7 +16,7 @@ export default function StoreIntegration() {
   const handleTestConnection = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${baseURL}/api/shopify/test`, {
+      const response = await axios.post(`$import.meta.env.VITE_API_URL}/api/shopify/test`, {
         domain,
         token,
       });
