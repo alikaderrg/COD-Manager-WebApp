@@ -12,15 +12,15 @@ export async function testShopifyConnection(req, res) {
     const response = await axios.get(`https://${domain}/admin/api/2023-10/products.json`, {
       headers: {
         'X-Shopify-Access-Token': token,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
     });
 
-    if (!response.data?.shop) {
-      return res.status(404).json({ error: 'Shop info not found' });
+    if (!response.data?.products) {
+      return res.status(404).json({ error: 'No products found or invalid token' });
     }
 
-    return res.status(200).json({ success: true, shop: response.data.shop });
+    return res.status(200).json({ success: true, sample: response.data.products.slice(0, 1) });
   } catch (error) {
     console.error('Shopify API Error:', error?.response?.data || error.message);
     return res.status(401).json({ error: 'Invalid Shopify credentials or domain' });
