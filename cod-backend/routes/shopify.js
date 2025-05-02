@@ -1,16 +1,14 @@
-// routes/shopify.js
 import express from 'express';
 import { testShopifyConnection } from '../controllers/shopifyController.js';
+import { saveShopifyCredentials } from '../controllers/shopifySaveController.js';
 
 const router = express.Router();
 
-// Test Connection with Shopify
 router.post('/test', testShopifyConnection);
+router.post('/save', saveShopifyCredentials); // ✅ new route
 
-// Optional: Ping test to verify routing
 router.get('/ping', (req, res) => {
   res.send('pong');
 });
 
 export default router;
-

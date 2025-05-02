@@ -5,7 +5,9 @@ import { useToast } from '@/components/ui/use-toast';
 import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const endpoint = `${baseURL.replace(/\/$/, '')}/api/shopify/test`;
+
+// 🔐 Replace this with real user ID from auth later
+const MOCK_USER_ID = 'your-user-id-here';
 
 export default function StoreIntegration() {
   const { toast } = useToast();
@@ -17,24 +19,32 @@ export default function StoreIntegration() {
   const handleTestConnection = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(endpoint, {
+      // 1. Test connection
+      const response = await axios.post(`${baseURL}/api/shopify/test`, {
         domain,
         token,
       });
 
-      const product = response.data.sample?.[0];
-      if (product) {
-        setShopInfo(product);
-        toast({
-          title: '✅ Connected to Shopify!',
-          description: `Sample Product: ${product.title}`,
-        });
-      } else {
-        toast({
-          title: '❌ No products found',
-          description: 'Your store responded, but it returned no product data.',
-        });
-      }
+      const shop = response.data.shop || response.data.sample?.[0];
+      setShopInfo(shop);
+
+      toast({
+        title: '✅ Connected to Shopify!',
+        description: `Store: ${shop?.name || domain}`,
+      });
+
+      // 2. Save to backend
+      await axios.post(`${baseURL}/api/shopify/save`, {
+        domain,
+        token,
+        userId: MOCK_USER_ID, // Replace with real auth data later
+      });
+
+      toast({
+        title: '💾 Credentials Saved',
+        description: `Your Shopify settings have been stored securely.`,
+      });
+
     } catch (err) {
       const msg = err.response?.data?.error || err.message || 'Unknown error';
       toast({ title: '❌ Connection failed', description: msg });
@@ -76,12 +86,10 @@ export default function StoreIntegration() {
 
         {shopInfo && (
           <div className="mt-6 p-4 border rounded bg-muted">
-            <h4 className="font-medium">Connected Sample Product:</h4>
-            <p className="text-sm">Title: {shopInfo.title}</p>
-            <p className="text-sm">ID: {shopInfo.id}</p>
-            {shopInfo.variants?.length > 0 && (
-              <p className="text-sm">Variant: {shopInfo.variants[0].title}</p>
-            )}
+            <h4 className="font-medium">Connected Store:</h4>
+            <p className="text-sm">Name: {shopInfo.name}</p>
+            <p className="text-sm">Domain: {shopInfo.myshopify_domain || domain}</p>
+            <p className="text-sm">Email: {shopInfo.email}</p>
           </div>
         )}
       </div>
