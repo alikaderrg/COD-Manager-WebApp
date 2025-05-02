@@ -8,7 +8,7 @@ import {
   getCourierStatus,
   fetchOrdersFromShopify
 } from '../controllers/orderController.js';
-import authenticateToken from '../middlewares/authenticate.js';
+import authenticateToken from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
