@@ -1,34 +1,56 @@
-// controllers/shopifyController.js
+import prisma from '../lib/prisma.js';
 import axios from 'axios';
 
+// Test Shopify connection using credentials
 export async function testShopifyConnection(req, res) {
-  const { domain, token } = req.body;
-
-  if (!domain || !token) {
-    return res.status(400).json({ error: 'Missing domain or token' });
-  }
-
   try {
-    const response = await axios.get(`https://${domain}/admin/api/2023-10/products.json`, {
+    const { storeUrl, accessToken } = req.body;
+
+    if (!storeUrl || !accessToken) {
+      return res.status(400).json({ error: 'Missing storeUrl or accessToken' });
+    }
+
+    const response = await axios.get(`https://${storeUrl}/admin/api/2023-07/shop.json`, {
       headers: {
-        'X-Shopify-Access-Token': token,
-        'Content-Type': 'application/json'
+        'X-Shopify-Access-Token': accessToken,
+        'Content-Type': 'application/json',
       },
     });
 
-    const products = response.data.products;
-    if (!products || products.length === 0) {
-      return res.status(404).json({ error: 'No products found or invalid token' });
+    res.status(200).json({ success: true, shop: response.data.shop });
+  } catch (error) {
+    console.error('Shopify connection test failed:', error.message);
+    res.status(500).json({ success: false, error: 'Failed to connect to Shopify' });
+  }
+}
+
+// Save or update Shopify credentials for authenticated user
+export async function saveShopifyCredentials(req, res) {
+  try {
+    const { storeUrl, accessToken } = req.body;
+
+    if (!storeUrl || !accessToken) {
+      return res.status(400).json({ error: 'Missing storeUrl or accessToken' });
     }
 
-    return res.status(200).json({
-      success: true,
-      sample: products.slice(0, 1),
-    });
+    const userId = req.user.id;
+
+    const existing = await prisma.shopifyStore.findFirst({ where: { userId } });
+
+    if (existing) {
+      await prisma.shopifyStore.update({
+        where: { id: existing.id },
+        data: { storeUrl, accessToken },
+      });
+    } else {
+      await prisma.shopifyStore.create({
+        data: { storeUrl, accessToken, userId },
+      });
+    }
+
+    res.status(200).json({ message: 'Shopify credentials saved successfully' });
   } catch (error) {
-    console.error('Shopify API Error:', error?.response?.data || error.message);
-    return res.status(401).json({
-      error: 'Invalid Shopify credentials, store domain, or token',
-    });
+    console.error('Error saving Shopify credentials:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
