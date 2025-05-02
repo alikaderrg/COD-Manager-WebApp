@@ -1,11 +1,24 @@
-// routes/courier.js
 import express from 'express';
-import { verifyToken } from '../middlewares/authenticate.js';
-import { exportToCourier } from '../controllers/courierController.js';
+import {
+  exportToZRExpress,
+  getZRParcelStatus,
+  updateZRParcelToReady,
+  cancelZRParcel
+} from '../controllers/courierController.js';
+import { authenticateToken as requireAuth } from '../middlewares/authenticate.js';
 
 const router = express.Router();
 
-// POST /api/courier/export
-router.post('/export', verifyToken, exportToCourier);
+// Export parcels to ZR Express
+router.post('/export', requireAuth, exportToZRExpress);
+
+// Get parcel tracking status from ZR Express
+router.post('/status', requireAuth, getZRParcelStatus);
+
+// Mark parcel as ready to ship
+router.post('/ready', requireAuth, updateZRParcelToReady);
+
+// Cancel a parcel
+router.post('/cancel', requireAuth, cancelZRParcel);
 
 export default router;

@@ -1,6 +1,10 @@
+// controllers/courierController.js
 import axios from 'axios';
 import prisma from '../lib/prisma.js';
 
+/**
+ * Export orders to ZR Express and confirm tracking
+ */
 export async function exportToZRExpress(req, res) {
   const userId = req.user?.id;
   const orders = req.body.orders;
@@ -12,9 +16,11 @@ export async function exportToZRExpress(req, res) {
   try {
     const zr = await prisma.zRIntegration.findUnique({ where: { userId } });
 
-    if (!zr) return res.status(403).json({ error: 'ZR Express not configured for this user' });
+    if (!zr) {
+      return res.status(403).json({ error: 'ZR Express not configured for this user' });
+    }
 
-    // Prepare parcel payload
+    // Prepare parcels
     const colisPayload = {
       Colis: orders.map((o) => ({
         Tracking: o.id,
@@ -25,7 +31,7 @@ export async function exportToZRExpress(req, res) {
         MobileA: o.phoneNumber,
         MobileB: o.phoneNumber,
         Adresse: o.note || 'N/A',
-        IDWilaya: '31',
+        IDWilaya: '31', // Hardcoded, replace with dynamic logic if needed
         Commune: o.commune,
         Total: String(o.sellingPrice),
         Note: o.commentary || '',
@@ -35,7 +41,7 @@ export async function exportToZRExpress(req, res) {
       }))
     };
 
-    // 1. Export orders to ZR Express
+    // Step 1: Send parcels
     await axios.post('https://procolis.com/api_v1/add_colis', colisPayload, {
       headers: {
         token: zr.token,
@@ -44,7 +50,7 @@ export async function exportToZRExpress(req, res) {
       }
     });
 
-    // 2. Immediately query tracking confirmation
+    // Step 2: Confirm by reading them back
     const lirePayload = {
       Colis: orders.map((o) => ({ Tracking: o.id }))
     };
@@ -59,9 +65,9 @@ export async function exportToZRExpress(req, res) {
 
     const confirmed = lireResponse.data.Colis || [];
 
-    const updated = confirmed.map(colis => ({
+    const updated = confirmed.map((colis) => ({
       id: colis.Tracking,
-      trackingId: colis.Tracking // or replace with another field if real assigned ID differs
+      trackingId: colis.Tracking // Replace if actual tracking ID differs
     }));
 
     return res.status(200).json({ updated });
