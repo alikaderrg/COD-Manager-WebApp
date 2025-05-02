@@ -16,3 +16,5 @@ export const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+export const verifyToken = authenticateToken;
