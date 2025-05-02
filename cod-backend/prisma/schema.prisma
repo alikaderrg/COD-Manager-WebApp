@@ -1,5 +1,3 @@
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,35 +8,32 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  stores    Store[]
+  id              String              @id @default(cuid())
+  email           String              @unique
+  passwordHash    String
+  name            String?
+  shopify         ShopifyIntegration?
+  zrExpress       ZRIntegration?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
+
+model ShopifyIntegration {
+  id        String   @id @default(cuid())
+  domain    String
+  token     String   // Will encrypt this in app logic
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Store {
-  id              String   @id @default(uuid())
-  userId          String
-  user            User     @relation(fields: [userId], references: [id])
-  name            String
-  shopifyDomain   String   @unique
-  shopifyToken    String
-  courierToken    String?  // optional
-  courierKey      String?  // optional
-  orders          Order[]
-  createdAt       DateTime @default(now())
-}
-
-model Order {
-  id            String   @id @default(uuid())
-  storeId       String
-  store         Store    @relation(fields: [storeId], references: [id])
-  externalId    String   // Shopify Order ID
-  customerName  String
-  phoneNumber   String
-  totalAmount   Float
-  status        String
-  createdAt     DateTime @default(now())
+model ZRIntegration {
+  id        String   @id @default(cuid())
+  token     String
+  key       String
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
