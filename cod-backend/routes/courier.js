@@ -1,10 +1,11 @@
 // routes/courier.js
 import express from 'express';
-import { exportToZRExpress } from '../controllers/courierController.js';
-import requireAuth from '../middlewares/requireAuth.js';
+import { verifyToken } from '../middlewares/authenticate.js';
+import { exportToCourier } from '../controllers/courierController.js';
 
 const router = express.Router();
 
-router.post('/export', requireAuth, exportToZRExpress);
+// POST /api/courier/export
+router.post('/export', verifyToken, exportToCourier);
 
 export default router;
