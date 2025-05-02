@@ -1,36 +1,35 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-export default function Signup() {
-  const { toast } = useToast();
+export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
-      const res = await axios.post(`${baseURL}/api/auth/signup`, { email, password, name });
-      const { token, user } = res.data;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      toast({ title: '✅ Signup successful', description: `Welcome, ${user.email}` });
+      const res = await axios.post(`${baseURL}/api/auth/signup`, { email, password });
+      localStorage.setItem('auth_token', res.data.token);
+      toast({ title: '✅ Account created!' });
+      navigate('/');
     } catch (err) {
-      toast({ title: '❌ Signup failed', description: err.response?.data?.error || err.message });
+      toast({ title: '❌ Signup failed', description: err.response?.data?.error || 'Try again' });
     }
   };
 
   return (
-    <div className="max-w-md space-y-4 p-6">
-      <h2 className="text-2xl font-bold">Create Account</h2>
-      <Input placeholder="Name (optional)" value={name} onChange={(e) => setName(e.target.value)} />
+    <div className="bg-card p-6 rounded-lg shadow-lg w-full max-w-sm">
+      <h2 className="text-xl font-bold mb-4">Create Account</h2>
       <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <Input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <Button onClick={handleSignup}>Sign Up</Button>
+      <Input className="mt-4" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <Button className="mt-4 w-full" onClick={handleSignup}>Sign Up</Button>
     </div>
   );
 }

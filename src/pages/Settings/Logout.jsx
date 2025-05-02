@@ -1,8 +1,13 @@
-export default function Plans() {
-    return (
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Plans</h2>
-        <p className="text-muted-foreground">This section will show your current subscription plan and available upgrades.</p>
-      </div>
-    );
-  }
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+export default function Logout() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.removeItem('auth_token');
+    navigate('/login');
+  }, [navigate]);
+
+  return null;
+}

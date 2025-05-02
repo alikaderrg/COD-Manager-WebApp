@@ -6,9 +6,6 @@ import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-// 🔐 Replace this with real user ID from auth later
-const MOCK_USER_ID = 'your-user-id-here';
-
 export default function StoreIntegration() {
   const { toast } = useToast();
   const [domain, setDomain] = useState('');
@@ -16,34 +13,26 @@ export default function StoreIntegration() {
   const [loading, setLoading] = useState(false);
   const [shopInfo, setShopInfo] = useState(null);
 
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+  };
+
   const handleTestConnection = async () => {
     setLoading(true);
     try {
-      // 1. Test connection
       const response = await axios.post(`${baseURL}/api/shopify/test`, {
         domain,
         token,
-      });
+      }, { headers });
 
-      const shop = response.data.shop || response.data.sample?.[0];
-      setShopInfo(shop);
-
+      setShopInfo(response.data.sample[0]);
       toast({
         title: '✅ Connected to Shopify!',
-        description: `Store: ${shop?.name || domain}`,
+        description: `Sample product: ${response.data.sample[0].title}`,
       });
 
-      // 2. Save to backend
-      await axios.post(`${baseURL}/api/shopify/save`, {
-        domain,
-        token,
-        userId: MOCK_USER_ID, // Replace with real auth data later
-      });
-
-      toast({
-        title: '💾 Credentials Saved',
-        description: `Your Shopify settings have been stored securely.`,
-      });
+      // Save to DB
+      await axios.post(`${baseURL}/api/shopify/save`, { domain, token }, { headers });
 
     } catch (err) {
       const msg = err.response?.data?.error || err.message || 'Unknown error';
@@ -86,10 +75,9 @@ export default function StoreIntegration() {
 
         {shopInfo && (
           <div className="mt-6 p-4 border rounded bg-muted">
-            <h4 className="font-medium">Connected Store:</h4>
-            <p className="text-sm">Name: {shopInfo.name}</p>
-            <p className="text-sm">Domain: {shopInfo.myshopify_domain || domain}</p>
-            <p className="text-sm">Email: {shopInfo.email}</p>
+            <h4 className="font-medium">Connected Store Sample Product:</h4>
+            <p className="text-sm">Title: {shopInfo.title}</p>
+            <p className="text-sm">Created At: {shopInfo.created_at}</p>
           </div>
         )}
       </div>

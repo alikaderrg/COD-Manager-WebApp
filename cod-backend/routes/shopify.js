@@ -1,14 +1,10 @@
 import express from 'express';
-import { testShopifyConnection } from '../controllers/shopifyController.js';
-import { saveShopifyCredentials } from '../controllers/shopifySaveController.js';
+import { testShopifyConnection, saveShopifyCredentials } from '../controllers/shopifyController.js';
+import { verifyToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/test', testShopifyConnection);
-router.post('/save', saveShopifyCredentials); // ✅ new route
-
-router.get('/ping', (req, res) => {
-  res.send('pong');
-});
+router.post('/test', verifyToken, testShopifyConnection);
+router.post('/save', verifyToken, saveShopifyCredentials);
 
 export default router;
