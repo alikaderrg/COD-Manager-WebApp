@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,12 +9,21 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/components/ui/use-toast';
+import axios from 'axios';
+
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const headers = {
+  Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+};
 
 export default function ExportCourierDialog({ allOrders = [], onOrdersExported }) {
-  const [open, setOpen] = React.useState(false);
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const pendingExport = useMemo(
-    () => allOrders.filter(o => o.exportStatus !== 'Exported' && ['Confirmed', 'Packed'].includes(o.internalStatus)),
+    () => allOrders.filter(o => o.exportStatus !== 'Exported' && ['Confirmed', 'Packed'].includes(o.confirmationStatus)),
     [allOrders]
   );
 
@@ -23,13 +32,32 @@ export default function ExportCourierDialog({ allOrders = [], onOrdersExported }
     [allOrders]
   );
 
-  const handleExportAll = () => {
-    pendingExport.forEach(order => {
-      // Simulate fetching tracking ID from courier API here
-      const fakeTrackingId = `TRK${Math.floor(Math.random() * 1000000)}`;
-      onOrdersExported(order.id, fakeTrackingId);
-    });
-    setOpen(false);
+  const handleExportAll = async () => {
+    if (!pendingExport.length) return;
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/courier/export`,
+        { orders: pendingExport },
+        { headers }
+      );
+
+      const updatedOrders = response.data.updated || [];
+
+      updatedOrders.forEach(order => {
+        if (order.id && order.trackingId) {
+          onOrdersExported(order.id, order.trackingId);
+        }
+      });
+
+      toast({ title: '✅ Orders Exported', description: `${updatedOrders.length} orders exported to courier.` });
+      setOpen(false);
+    } catch (err) {
+      toast({ title: '❌ Export Failed', description: err.response?.data?.error || err.message });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,7 +108,9 @@ export default function ExportCourierDialog({ allOrders = [], onOrdersExported }
             <DialogClose asChild>
               <Button variant="outline">Close</Button>
             </DialogClose>
-            <Button onClick={handleExportAll} disabled={pendingExport.length === 0}>Export All Pending</Button>
+            <Button onClick={handleExportAll} disabled={loading || pendingExport.length === 0}>
+              {loading ? 'Exporting...' : 'Export All Pending'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

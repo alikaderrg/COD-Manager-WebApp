@@ -3,18 +3,10 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from '@/components/ui/toaster';
 import {
-  LayoutDashboard,
-  Package,
-  Truck,
-  Undo2,
-  PackageCheck,
-  Boxes,
-  Calculator,
-  Users,
-  Settings,
+  LayoutDashboard, Package, Truck, Undo2, PackageCheck, Boxes, Calculator, Users, Settings
 } from 'lucide-react';
 
-// App Pages
+// Pages
 import DashboardOverview from '@/pages/Dashboard/Overview';
 import OrderManagementOverview from '@/pages/OrderManagement/Overview';
 import ConfirmedOrders from '@/pages/OrderManagement/Confirmed';
@@ -33,8 +25,6 @@ import WhatsAppIntegration from '@/pages/Settings/WhatsAppIntegration';
 import AppPreferences from '@/pages/Settings/AppPreferences';
 import Plans from '@/pages/Settings/Plans';
 import Logout from '@/pages/Settings/Logout';
-
-// Auth Pages
 import LoginPage from '@/pages/Auth/Login';
 import SignupPage from '@/pages/Auth/Signup';
 
@@ -62,14 +52,12 @@ const settingsNavItems = [
 ];
 
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const token = localStorage.getItem('auth_token');
   const isAuthPage = ['/login', '/signup'].includes(location.pathname);
   const isAuthenticated = Boolean(token);
 
-  // If not logged in and not on login/signup, show blurred auth modal
   if (!isAuthenticated && !isAuthPage) {
     return (
       <div className="w-full h-screen bg-background/80 backdrop-blur-sm flex items-center justify-center">
@@ -101,7 +89,9 @@ function App() {
         className="bg-card border-r border-border shadow-lg h-full overflow-y-auto flex-shrink-0"
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h1 className={`text-lg font-bold text-primary transition-opacity ${sidebarOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>📦 COD MANAGER</h1>
+          <h1 className={`text-lg font-bold text-primary transition-opacity ${sidebarOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>
+            📦 COD MANAGER
+          </h1>
         </div>
         <nav className="flex-1 px-2 py-4 space-y-2">
           {navItems.map((item) =>
@@ -152,9 +142,11 @@ function App() {
 const NavLink = ({ to, label, icon, isOpen }) => {
   const location = useLocation();
   const active = location.pathname.startsWith(to);
-
   return (
-    <Link to={to} className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${active ? 'bg-primary/10 text-primary' : 'hover:bg-accent hover:text-accent-foreground'}`}>
+    <Link
+      to={to}
+      className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${active ? 'bg-primary/10 text-primary' : 'hover:bg-accent hover:text-accent-foreground'}`}
+    >
       {icon}
       {isOpen && <span>{label}</span>}
     </Link>
@@ -163,7 +155,7 @@ const NavLink = ({ to, label, icon, isOpen }) => {
 
 const SidebarGroup = ({ item, isOpen }) => {
   const location = useLocation();
-  const active = item.children.some(child => location.pathname.startsWith(child.path));
+  const active = item.children.some((child) => location.pathname.startsWith(child.path));
   return (
     <div>
       <div className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${active ? 'bg-primary/10 text-primary' : 'hover:bg-accent hover:text-accent-foreground'}`}>
@@ -173,7 +165,9 @@ const SidebarGroup = ({ item, isOpen }) => {
       {isOpen && (
         <div className="ml-6 mt-1 space-y-1">
           {item.children.map((child) => (
-            <Link key={child.path} to={child.path} className={`block text-sm px-3 py-1 rounded hover:bg-muted hover:text-foreground ${location.pathname === child.path ? 'bg-primary/10 text-primary' : ''}`}>{child.label}</Link>
+            <Link key={child.path} to={child.path} className={`block text-sm px-3 py-1 rounded hover:bg-muted hover:text-foreground ${location.pathname === child.path ? 'bg-primary/10 text-primary' : ''}`}>
+              {child.label}
+            </Link>
           ))}
         </div>
       )}

@@ -1,35 +1,50 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function LoginForm() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleLogin = async () => {
+    setLoading(true);
     try {
-      const res = await axios.post(`${baseURL}/api/auth/login`, { email, password });
-      localStorage.setItem('auth_token', res.data.token);
-      toast({ title: '✅ Login successful!' });
+      const response = await axios.post(`${API_URL}/api/auth/login`, formData);
+      const { token } = response.data;
+      localStorage.setItem('token', token);
+      toast({ title: '✅ Logged in!', description: 'Welcome back!' });
       navigate('/');
-    } catch (err) {
-      toast({ title: '❌ Login failed', description: err.response?.data?.error || 'Try again' });
+    } catch (error) {
+      toast({ title: '❌ Login failed', description: error.response?.data?.error || 'Invalid credentials' });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-card p-6 rounded-lg shadow-lg w-full max-w-sm">
-      <h2 className="text-xl font-bold mb-4">Login</h2>
-      <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <Input className="mt-4" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <Button className="mt-4 w-full" onClick={handleLogin}>Login</Button>
+    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow">
+      <h2 className="text-xl font-semibold mb-4">Login to Your Account</h2>
+
+      <Input placeholder="Email" name="email" value={formData.email} onChange={handleChange} className="mb-2" />
+      <Input placeholder="Password" type="password" name="password" value={formData.password} onChange={handleChange} className="mb-4" />
+
+      <Button className="w-full" onClick={handleLogin} disabled={loading}>
+        {loading ? 'Logging in...' : 'Login'}
+      </Button>
     </div>
   );
 }

@@ -37,3 +37,23 @@ model ZRIntegration {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+
+model Order {
+  id                 String   @id @default(cuid())
+  confirmationStatus String
+  alertReason        String?
+  cancelReason       String?
+  warehouseStatus    String?
+  courierStatus      String?
+  trackingId         String?
+  customerName       String
+  phoneNumber        String
+  productName        String
+  quantity           Int
+  sellingPrice       Float
+  exportStatus       String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  userId             String
+}

@@ -1,35 +1,56 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-export default function SignupPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function SignupForm() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    fullName: '',
+    storeName: '',
+    username: '',
+    email: '',
+    phone: '',
+    password: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSignup = async () => {
+    setLoading(true);
     try {
-      const res = await axios.post(`${baseURL}/api/auth/signup`, { email, password });
-      localStorage.setItem('auth_token', res.data.token);
-      toast({ title: '✅ Account created!' });
-      navigate('/');
-    } catch (err) {
-      toast({ title: '❌ Signup failed', description: err.response?.data?.error || 'Try again' });
+      const response = await axios.post(`${API_URL}/api/auth/signup`, formData);
+      toast({ title: '✅ Account created!', description: 'You can now login.' });
+      navigate('/login');
+    } catch (error) {
+      toast({ title: '❌ Signup failed', description: error.response?.data?.error || 'Something went wrong' });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-card p-6 rounded-lg shadow-lg w-full max-w-sm">
-      <h2 className="text-xl font-bold mb-4">Create Account</h2>
-      <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <Input className="mt-4" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <Button className="mt-4 w-full" onClick={handleSignup}>Sign Up</Button>
+    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow">
+      <h2 className="text-xl font-semibold mb-4">Create Account</h2>
+
+      <Input placeholder="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} className="mb-2" />
+      <Input placeholder="Store Name" name="storeName" value={formData.storeName} onChange={handleChange} className="mb-2" />
+      <Input placeholder="Username" name="username" value={formData.username} onChange={handleChange} className="mb-2" />
+      <Input placeholder="Email" name="email" value={formData.email} onChange={handleChange} className="mb-2" />
+      <Input placeholder="Phone Number" name="phone" value={formData.phone} onChange={handleChange} className="mb-2" />
+      <Input placeholder="Password" type="password" name="password" value={formData.password} onChange={handleChange} className="mb-4" />
+
+      <Button className="w-full" onClick={handleSignup} disabled={loading}>
+        {loading ? 'Creating...' : 'Sign Up'}
+      </Button>
     </div>
   );
 }

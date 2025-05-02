@@ -8,6 +8,12 @@ import AddOrderForm from '@/components/orders/AddOrderForm';
 import ExportCourierDialog from '@/components/orders/ExportCourierDialog';
 import { useToast } from '@/components/ui/use-toast';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const headers = {
+  Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+};
 
 const getStatusCounts = (orders) => {
   const counts = orders.reduce((acc, order) => {
@@ -85,8 +91,8 @@ const OrderManagementOverview = ({ filterStatus }) => {
     toast({ title: "Order Updated", description: `Order ${orderId} has been updated.` });
   }, [orders, toast]);
 
-  const handleExportOrderCallback = useCallback((orderId) => {
-    handleUpdateOrder(orderId, { exportStatus: 'Exported' });
+  const handleExportOrderCallback = useCallback((orderId, trackingId) => {
+    handleUpdateOrder(orderId, { exportStatus: 'Exported', trackingId });
   }, [handleUpdateOrder]);
 
   const handleSendWhatsApp = (orderId, phone, name) => {
@@ -95,6 +101,18 @@ const OrderManagementOverview = ({ filterStatus }) => {
   };
 
   const handlePrintLabel = (orderId) => toast({ title: "Print Label", description: `Printing label for order ${orderId}` });
+
+  const handleBulkSync = async () => {
+    try {
+      const res = await axios.post(`${baseURL}/api/orders/sync`, {}, { headers });
+      const synced = res.data.orders || [];
+      setOrders(synced);
+      localStorage.setItem('cod_orders', JSON.stringify(synced));
+      toast({ title: '✅ Synced', description: `Fetched ${synced.length} orders.` });
+    } catch (err) {
+      toast({ title: '❌ Sync Failed', description: err.response?.data?.error || err.message });
+    }
+  };
 
   const statusCounts = getStatusCounts(filteredOrders);
   const metrics = calculateMetrics(filteredOrders);
@@ -106,7 +124,7 @@ const OrderManagementOverview = ({ filterStatus }) => {
         {!filterStatus && (
           <div className="flex flex-wrap items-center gap-2">
             <DatePickerWithRange onDateChange={handleDateChange} />
-            <Button variant="outline" size="icon" title="Sync Orders"> <RotateCw size={16} /> </Button>
+            <Button variant="outline" size="icon" title="Sync Orders" onClick={handleBulkSync}> <RotateCw size={16} /> </Button>
           </div>
         )}
       </div>

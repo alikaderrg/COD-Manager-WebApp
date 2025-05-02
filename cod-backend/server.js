@@ -10,6 +10,9 @@ import authRoutes from './routes/auth.js';
 import shopifyRoutes from './routes/shopify.js';
 import ordersRoutes from './routes/orders.js';
 import zrRoutes from './routes/zr.js';
+import courierRoutes from './routes/courier.js';
+
+
 
 dotenv.config();
 
@@ -28,6 +31,7 @@ app.use('/api/auth', authRoutes);         // No auth required
 app.use('/api/shopify', shopifyRoutes);   // Protected
 app.use('/api/orders', ordersRoutes);     // Protected
 app.use('/api/zr', zrRoutes);             // Protected
+app.use('/api/courier', courierRoutes);
 
 // Default route
 app.get('/', (req, res) => {
