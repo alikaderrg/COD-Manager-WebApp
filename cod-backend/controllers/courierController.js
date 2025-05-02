@@ -1,5 +1,5 @@
 import axios from 'axios';
-import prisma from '../prisma/client.js';
+import prisma from '../lib/prisma.js';
 
 export async function exportToZRExpress(req, res) {
   const userId = req.user?.id;
