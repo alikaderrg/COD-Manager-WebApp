@@ -1,92 +1,65 @@
+// src/pages/Auth/Signup.jsx
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const [form, setForm] = useState({
-    fullName: '',
-    storeName: '',
-    username: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
-  });
-
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/auth/signup', form);
-      navigate('/auth/login');
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
+        email,
+        password,
+      });
+
+      localStorage.setItem('auth_token', res.data.token);
+      navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Signup failed');
+      setError(err.response?.data?.message || 'Signup failed');
     }
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      backgroundColor: '#f9f9f9'
-    }}>
-      <form onSubmit={handleSubmit} style={{
-        maxWidth: '400px',
-        width: '100%',
-        padding: '2rem',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 0 10px rgba(0,0,0,0.1)'
-      }}>
-        <h2 style={{ textAlign: 'center' }}>Sign Up</h2>
-
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        {['fullName', 'storeName', 'username', 'email', 'phoneNumber', 'password'].map((field) => (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-80">
+        <h2 className="text-xl font-bold text-center mb-4">Create Account</h2>
+        <form onSubmit={handleSignup} className="space-y-4">
           <input
-            key={field}
-            type={field === 'password' ? 'password' : 'text'}
-            name={field}
-            placeholder={field.replace(/([A-Z])/g, ' $1')}
-            value={form[field]}
-            onChange={handleChange}
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '10px',
-              borderRadius: '4px',
-              border: '1px solid #ccc'
-            }}
           />
-        ))}
-
-        <button type="submit" style={{
-          width: '100%',
-          padding: '10px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}>
-          Sign Up
-        </button>
-
-        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-md transition duration-200"
+          >
+            Sign Up
+          </button>
+        </form>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        <p className="text-sm text-center mt-4">
           Already have an account?{' '}
-          <a href="/auth/login" style={{ color: '#007bff' }}>
+          <Link to="/login" className="text-purple-600 hover:underline">
             Log in
-          </a>
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 };
