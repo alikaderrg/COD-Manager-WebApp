@@ -1,57 +1,94 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-export default function SignupForm() {
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+const Signup = () => {
+  const [form, setForm] = useState({
     fullName: '',
     storeName: '',
     username: '',
     email: '',
-    phone: '',
-    password: ''
+    phoneNumber: '',
+    password: '',
   });
-  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSignup = async () => {
-    setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}/api/auth/signup`, formData);
-      toast({ title: '✅ Account created!', description: 'You can now login.' });
-      navigate('/login');
-    } catch (error) {
-      toast({ title: '❌ Signup failed', description: error.response?.data?.error || 'Something went wrong' });
-    } finally {
-      setLoading(false);
+      await axios.post('/api/auth/signup', form);
+      navigate('/auth/login');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Signup failed');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">Create Account</h2>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      backgroundColor: '#f9f9f9'
+    }}>
+      <form onSubmit={handleSubmit} style={{
+        maxWidth: '400px',
+        width: '100%',
+        padding: '2rem',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+      }}>
+        <h2 style={{ textAlign: 'center' }}>Sign Up</h2>
 
-      <Input placeholder="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} className="mb-2" />
-      <Input placeholder="Store Name" name="storeName" value={formData.storeName} onChange={handleChange} className="mb-2" />
-      <Input placeholder="Username" name="username" value={formData.username} onChange={handleChange} className="mb-2" />
-      <Input placeholder="Email" name="email" value={formData.email} onChange={handleChange} className="mb-2" />
-      <Input placeholder="Phone Number" name="phone" value={formData.phone} onChange={handleChange} className="mb-2" />
-      <Input placeholder="Password" type="password" name="password" value={formData.password} onChange={handleChange} className="mb-4" />
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <Button className="w-full" onClick={handleSignup} disabled={loading}>
-        {loading ? 'Creating...' : 'Sign Up'}
-      </Button>
+        {['fullName', 'storeName', 'username', 'email', 'phoneNumber', 'password'].map((field) => (
+          <input
+            key={field}
+            type={field === 'password' ? 'password' : 'text'}
+            name={field}
+            placeholder={field.replace(/([A-Z])/g, ' $1')}
+            value={form[field]}
+            onChange={handleChange}
+            required
+            style={{
+              width: '100%',
+              padding: '10px',
+              marginBottom: '10px',
+              borderRadius: '4px',
+              border: '1px solid #ccc'
+            }}
+          />
+        ))}
+
+        <button type="submit" style={{
+          width: '100%',
+          padding: '10px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer'
+        }}>
+          Sign Up
+        </button>
+
+        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+          Already have an account?{' '}
+          <a href="/auth/login" style={{ color: '#007bff' }}>
+            Log in
+          </a>
+        </p>
+      </form>
     </div>
   );
-}
-<Link to="/auth/login">Log in</Link>
+};
+
+export default Signup;

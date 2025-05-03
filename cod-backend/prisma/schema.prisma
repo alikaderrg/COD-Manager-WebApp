@@ -8,52 +8,33 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  fullName  String
-  email     String   @unique
-  username  String
-  storeName String
-  phone     String
-  password  String
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  fullName    String
+  storeName   String
+  username    String   @unique
+  email       String   @unique
+  phoneNumber String
+  password    String
+  createdAt   DateTime @default(now())
+
+  shopifyIntegration ShopifyIntegration?
+  zrIntegration      ZRIntegration?
 }
 
 model ShopifyIntegration {
   id        String   @id @default(cuid())
-  domain    String
-  token     String   // Stored securely or encrypted in app
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
+  storeUrl  String
+  token     String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model ZRIntegration {
   id        String   @id @default(cuid())
-  token     String
-  key       String
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
+  token     String
+  key       String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-
-model Order {
-  id                 String   @id @default(cuid())
-  confirmationStatus String
-  alertReason        String?
-  cancelReason       String?
-  warehouseStatus    String?
-  courierStatus      String?
-  trackingId         String?
-  customerName       String
-  phoneNumber        String
-  productName        String
-  quantity           Int
-  sellingPrice       Float
-  exportStatus       String
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  userId             String
 }

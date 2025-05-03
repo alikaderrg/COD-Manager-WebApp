@@ -1,50 +1,98 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-export default function LoginForm() {
-  const { toast } = useToast();
+const Login = () => {
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = async () => {
-    setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, formData);
-      const { token } = response.data;
-      localStorage.setItem('token', token);
-      toast({ title: '✅ Logged in!', description: 'Welcome back!' });
+      const res = await axios.post('/api/auth/login', form);
+      localStorage.setItem('token', res.data.token);
       navigate('/');
-    } catch (error) {
-      toast({ title: '❌ Login failed', description: error.response?.data?.error || 'Invalid credentials' });
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Login failed');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">Login to Your Account</h2>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      backgroundColor: '#f5f5f5'
+    }}>
+      <form onSubmit={handleSubmit} style={{
+        maxWidth: '400px',
+        width: '100%',
+        padding: '2rem',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+      }}>
+        <h2 style={{ textAlign: 'center' }}>Log In</h2>
 
-      <Input placeholder="Email" name="email" value={formData.email} onChange={handleChange} className="mb-2" />
-      <Input placeholder="Password" type="password" name="password" value={formData.password} onChange={handleChange} className="mb-4" />
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <Button className="w-full" onClick={handleLogin} disabled={loading}>
-        {loading ? 'Logging in...' : 'Login'}
-      </Button>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '10px',
+            borderRadius: '4px',
+            border: '1px solid #ccc'
+          }}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '10px',
+            borderRadius: '4px',
+            border: '1px solid #ccc'
+          }}
+        />
+        <button type="submit" style={{
+          width: '100%',
+          padding: '10px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer'
+        }}>
+          Log In
+        </button>
+
+        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+          Don't have an account?{' '}
+          <a href="/auth/signup" style={{ color: '#007bff' }}>
+            Sign up
+          </a>
+        </p>
+      </form>
     </div>
   );
-}
+};
+
+export default Login;

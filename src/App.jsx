@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from '@/components/ui/toaster';
 import {
@@ -54,16 +54,26 @@ const settingsNavItems = [
 function App() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const token = localStorage.getItem('auth_token');
+  const [tokenChecked, setTokenChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    setIsAuthenticated(!!token);
+    setTokenChecked(true);
+  }, [location.pathname]);
+
   const isAuthPage = ['/login', '/signup'].includes(location.pathname);
-  const isAuthenticated = Boolean(token);
+
+  if (!tokenChecked) return null;
 
   if (!isAuthenticated && !isAuthPage) {
     return (
       <div className="w-full h-screen bg-background/80 backdrop-blur-sm flex items-center justify-center">
         <Routes>
-          <Route path="*" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="*" element={<Navigate to="/signup" />} />
         </Routes>
       </div>
     );
@@ -74,6 +84,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     );
   }
@@ -131,6 +142,7 @@ function App() {
             <Route path="/settings/app" element={<AppPreferences />} />
             <Route path="/settings/plans" element={<Plans />} />
             <Route path="/settings/logout" element={<Logout />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </AnimatePresence>
       </main>
