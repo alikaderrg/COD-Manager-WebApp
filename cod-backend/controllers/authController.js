@@ -5,7 +5,7 @@ import prisma from '../lib/prisma.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 export async function signup(req, res) {
-  const { fullName, email, username, storeName, phoneNumber, password } = req.body;
+  const { fullName, email, username, storeName, phone, password } = req.body;
 
   if (!email || !password || !fullName || !username || !storeName || !phoneNumber) {
     return res.status(400).json({ error: 'All fields are required' });
@@ -28,7 +28,7 @@ export async function signup(req, res) {
         email,
         username,
         storeName,
-        phoneNumber,
+        phoneNumber: phone,
         password: hashedPassword,
       },
     });

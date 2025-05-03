@@ -9,7 +9,7 @@ export default function Signup() {
     storeName: '',
     username: '',
     email: '',
-    phoneNumber: '',
+    phone: '',
     password: '',
   });
 
@@ -24,9 +24,7 @@ export default function Signup() {
     setError('');
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`,
-        formData
-      );
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, formData);
       localStorage.setItem('token', res.data.token);
       navigate('/');
     } catch (err) {
@@ -78,7 +76,7 @@ export default function Signup() {
           />
           <input
             type="text"
-            name="phoneNumber"
+            name="phone"
             placeholder="Phone Number"
             value={formData.phoneNumber}
             onChange={handleChange}
