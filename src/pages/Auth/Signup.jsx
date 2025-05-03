@@ -54,3 +54,4 @@ export default function SignupForm() {
     </div>
   );
 }
+<Link to="/auth/login">Log in</Link>
