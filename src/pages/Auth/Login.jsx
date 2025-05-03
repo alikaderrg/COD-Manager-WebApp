@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const Login = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+export default function Login() {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     try {
-      const res = await axios.post('/api/auth/login', form);
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, formData);
       localStorage.setItem('token', res.data.token);
       navigate('/');
     } catch (err) {
@@ -23,76 +24,46 @@ const Login = () => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      backgroundColor: '#f5f5f5'
-    }}>
-      <form onSubmit={handleSubmit} style={{
-        maxWidth: '400px',
-        width: '100%',
-        padding: '2rem',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 0 10px rgba(0,0,0,0.1)'
-      }}>
-        <h2 style={{ textAlign: 'center' }}>Log In</h2>
-
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-          style={{
-            width: '100%',
-            padding: '10px',
-            marginBottom: '10px',
-            borderRadius: '4px',
-            border: '1px solid #ccc'
-          }}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-          style={{
-            width: '100%',
-            padding: '10px',
-            marginBottom: '10px',
-            borderRadius: '4px',
-            border: '1px solid #ccc'
-          }}
-        />
-        <button type="submit" style={{
-          width: '100%',
-          padding: '10px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}>
-          Log In
-        </button>
-
-        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Login to Your Account</h2>
+        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <button
+            type="submit"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md transition"
+          >
+            Log In
+          </button>
+        </form>
+        <p className="mt-4 text-center text-sm text-gray-600">
           Don't have an account?{' '}
-          <a href="/auth/signup" style={{ color: '#007bff' }}>
+          <button
+            className="text-purple-600 hover:underline"
+            onClick={() => navigate('/auth/signup')}
+          >
             Sign up
-          </a>
+          </button>
         </p>
-      </form>
+      </div>
     </div>
   );
-};
-
-export default Login;
+}
