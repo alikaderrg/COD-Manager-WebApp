@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 export async function signup(req, res) {
   const { fullName, email, username, storeName, phone, password } = req.body;
 
-  if (!email || !password || !fullName || !username || !storeName || !phoneNumber) {
+  if (!email || !password || !fullName || !username || !storeName || !phone) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
