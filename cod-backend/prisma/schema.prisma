@@ -8,10 +8,13 @@ datasource db {
 }
 
 model User {
-  id                 String              @id @default(dbgenerated("gen_random_uuid()"))
+  id                 String              @id @default(cuid())
+  fullName           String
+  storeName          String
+  username           String              @unique  // ✅ Add this line
   email              String              @unique
-  passwordHash       String
-  name               String?
+  phoneNumber        String
+  password           String
   createdAt          DateTime?           @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
   updatedAt          DateTime?           @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
   shopifyIntegration ShopifyIntegration?
