@@ -38,9 +38,19 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationError = validateForm();
-    if (validationError) {
-      setError(validationError);
+    setError('');
+
+    const { fullName, storeName, username, email, phoneNumber, password } = formData;
+
+    // Client-side validation
+    if (!fullName || !storeName || !username || !email || !phoneNumber || !password) {
+      setError("All fields are required");
+      return;
+    }
+
+    const phoneRegex = /^0\d{9}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      setError("Phone number must be exactly 10 digits and start with 0");
       return;
     }
 
@@ -54,25 +64,75 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">Create Account</h2>
-        <p className="text-center text-red-500 text-sm mb-4">All fields are required</p>
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} className="input" />
-          <input name="storeName" placeholder="Store Name" value={formData.storeName} onChange={handleChange} className="input" />
-          <input name="username" placeholder="Username" value={formData.username} onChange={handleChange} className="input" />
-          <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} className="input" />
-          <input name="phoneNumber" placeholder="Phone Number" value={formData.phoneNumber} onChange={handleChange} className="input" />
-          <input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} className="input" />
-          <button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md transition">Sign Up</button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-gray-800 mb-1 text-center">Create Account</h2>
+        <p className="text-sm text-red-500 text-center mb-4">All fields are required</p>
+        {error && <p className="text-red-600 mb-3 text-center">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input
+            type="text"
+            name="fullName"
+            placeholder="Full Name"
+            value={formData.fullName}
+            onChange={handleChange}
+            className="w-full px-4 py-2 bg-blue-50 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <input
+            type="text"
+            name="storeName"
+            placeholder="Store Name"
+            value={formData.storeName}
+            onChange={handleChange}
+            className="w-full px-4 py-2 bg-blue-50 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleChange}
+            className="w-full px-4 py-2 bg-blue-50 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2 bg-blue-50 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <input
+            type="text"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            className="w-full px-4 py-2 bg-blue-50 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <button
+            type="submit"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-md transition"
+          >
+            Sign Up
+          </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <button onClick={() => navigate('/auth/login')} className="text-purple-600 hover:underline">
+          <span
+            className="text-purple-600 hover:underline cursor-pointer"
+            onClick={() => navigate('/login')}
+          >
             Log in
-          </button>
+          </span>
         </p>
       </div>
     </div>
