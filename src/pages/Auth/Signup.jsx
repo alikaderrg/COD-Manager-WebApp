@@ -38,19 +38,9 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    const { fullName, storeName, username, email, phoneNumber, password } = formData;
-
-    // Client-side validation
-    if (!fullName || !storeName || !username || !email || !phoneNumber || !password) {
-      setError("All fields are required");
-      return;
-    }
-
-    const phoneRegex = /^0\d{9}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      setError("Phone number must be exactly 10 digits and start with 0");
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -129,7 +119,7 @@ export default function Signup() {
           Already have an account?{' '}
           <span
             className="text-purple-600 hover:underline cursor-pointer"
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('./login')}
           >
             Log in
           </span>
