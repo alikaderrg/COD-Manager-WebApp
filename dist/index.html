@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<meta name="generator" content="📦 COD MANAGER" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>📦 COD MANAGER</title>
+		<script type="module" crossorigin src="/assets/index-56887af6.js"></script>
+		<link rel="stylesheet" href="/assets/index-67c9a9c7.css">
+		<script type="module">window.onerror = (msg, src, line, col, err) => {
+        window.parent.postMessage({
+          type: 'horizons-runtime-error',
+          message: msg,
+          error: err ? JSON.stringify({
+            name: err.name,
+            message: err.message,
+            stack: err.stack,
+            src, line, col,
+          }) : null
+        }, '*');
+      };</script>
+		<script type="module">const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const addedNode of mutation.addedNodes) {
+            if (
+              addedNode.nodeType === Node.ELEMENT_NODE &&
+              (addedNode.tagName?.toLowerCase() === 'vite-error-overlay' ||
+               addedNode.classList?.contains('backdrop'))
+            ) {
+              const overlay = addedNode.shadowRoot?.querySelector('.backdrop');
+              if (overlay) {
+                const doc = new DOMParser().parseFromString(overlay.outerHTML, 'text/html');
+                const msg = doc.querySelector('.message-body')?.textContent?.trim() || '';
+                const file = doc.querySelector('.file')?.textContent?.trim() || '';
+                const errMsg = msg + (file ? ' File: ' + file : '');
+                window.parent.postMessage({ type: 'horizons-vite-error', error: errMsg }, '*');
+              }
+            }
+          }
+        }
+      });
+      observer.observe(document.documentElement, { childList: true, subtree: true });</script>
+		<script type="module">const originalConsoleError = console.error;
+      console.error = function(...args) {
+        originalConsoleError.apply(console, args);
+        const errorString = args.map(a => a instanceof Error ? a.stack || (a.name + ': ' + a.message) : JSON.stringify(a)).join(' ');
+        window.parent.postMessage({ type: 'horizons-console-error', error: errorString }, '*');
+      };</script>
+		<script type="module">const originalFetch = window.fetch;
+      window.fetch = function(...args) {
+        const url = args[0] instanceof Request ? args[0].url : args[0];
+        if (url.startsWith('ws:') || url.startsWith('wss:')) return originalFetch.apply(this, args);
+        return originalFetch.apply(this, args)
+          .then(async res => {
+            const type = res.headers.get('Content-Type') || '';
+            const isHtml = type.includes('text/html') || type.includes('application/xhtml+xml');
+            if (!res.ok && !isHtml) {
+              const body = await res.clone().text();
+              console.error(`Fetch error from ${res.url}: ${body}`);
+            }
+            return res;
+          })
+          .catch(err => {
+            if (!url.match(/\.html?$/)) console.error(err);
+            throw err;
+          });
+      };</script>
+	</head>
+	<body>
+		<div id="root"></div>
+		
+	</body>
+</html>
