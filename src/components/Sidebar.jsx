@@ -10,57 +10,57 @@ const navItems = [
   { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
   {
     label: 'Order Management', icon: <Package size={20} />, children: [
-      { path: '/orders/overview', label: 'Overview' },
-      { path: '/orders/alerted', label: 'Alerted Orders' },
-      { path: '/orders/confirmed', label: 'Confirmed Orders' },
-      { path: '/orders/pending', label: 'Pending Orders' },
-      { path: '/orders/cancelled', label: 'Cancelled Orders' },
-      { path: '/orders/archived', label: 'Archived Orders' },
+      { path: '/OrderManagement/Overview', label: 'Overview' },
+      { path: '/OrderManagement/Alerted', label: 'Alerted Orders' },
+      { path: '/OrderManagement/Confirmed', label: 'Confirmed Orders' },
+      { path: '/OrderManagement/Pending', label: 'Pending Orders' },
+      { path: '/OrderManagement/Cancelled', label: 'Cancelled Orders' },
+      { path: '/OrderManagement/Archived', label: 'Archived Orders' },
     ]
   },
   {
     label: 'Dispatch Center', icon: <Truck size={20} />, children: [
-      { path: '/dispatch/bag-overview', label: 'Bag Overview' },
-      { path: '/dispatch/orders', label: 'Dispatch Orders' },
-      { path: '/dispatch/bag', label: 'Dispatch Bag' },
+      { path: '/DispatchCenter/BagOverview', label: 'Bag Overview' },
+      { path: '/DispatchCenter/DispatchOrders', label: 'Dispatch Orders' },
+      { path: '/DispatchCenter/DispatchBag', label: 'Dispatch Bag' },
     ]
   },
   {
     label: 'Return Center', icon: <Undo2 size={20} />, children: [
-      { path: '/returns/overview', label: 'Returns Overview' },
-      { path: '/returns/reception', label: 'Return Reception' },
-      { path: '/returns/history', label: 'Return History' },
+      { path: '/ReturnCenter/Overview', label: 'Returns Overview' },
+      { path: '/ReturnCenter/ReturnReception', label: 'Return Reception' },
+      { path: '/ReturnCenter/ReturnHistory', label: 'Return History' },
     ]
   },
   {
     label: 'Picking & Packing', icon: <PackageCheck size={20} />, children: [
-      { path: '/picking-packing/overview', label: 'Overview' },
-      { path: '/picking-packing/picking', label: 'Picking' },
-      { path: '/picking-packing/packing', label: 'Packing Station' },
+      { path: '/PickingPacking/Overview', label: 'Overview' },
+      { path: '/PickingPacking/Picking', label: 'Picking' },
+      { path: '/PickingPacking/Packing', label: 'Packing Station' },
     ]
   },
   {
     label: 'Product Inventory', icon: <Boxes size={20} />, children: [
-      { path: '/inventory/list', label: 'Product List' },
-      { path: '/inventory/reception', label: 'Reception' },
-      { path: '/inventory/transfert', label: 'Transfert' },
-      { path: '/inventory/defects', label: 'Defect Management' },
+      { path: '/ProductInventory/Overview', label: 'Product Overview' },
+      { path: '/ProductInventory/ProductReception', label: 'Reception' },
+      { path: '/ProductInventory/ProductTransfert', label: 'Transfert' },
+      { path: '/ProductInventory/DefectManagement', label: 'Defect Management' },
     ]
   },
   {
     label: 'Accounting', icon: <Calculator size={20} />, children: [
-      { path: '/accounting/overview', label: 'Overview' },
-      { path: '/accounting/expenses', label: 'Expenses & Purchases' },
-      { path: '/accounting/salary', label: 'Payroll & Salary' },
-      { path: '/accounting/invoices', label: 'Invoice Management' },
+      { path: '/Accounting/Overview', label: 'Overview' },
+      { path: '/Accounting/Expenses', label: 'Expenses & Purchases' },
+      { path: '/Accounting/PayrollSalary', label: 'Payroll & Salary' },
+      { path: '/Accounting/Invoices', label: 'Invoice Management' },
     ]
   },
   {
     label: 'HR & Team', icon: <Users size={20} />, children: [
-      { path: '/hr/team', label: 'Team Members' },
-      { path: '/hr/roles', label: 'Roles Management' },
-      { path: '/hr/salary', label: 'Salary Management' },
-      { path: '/hr/warehouse', label: 'Warehouse Management' },
+      { path: '/HR/TeamMembers', label: 'Team Members' },
+      { path: '/HR/RolesManagement', label: 'Roles Management' },
+      { path: '/HR/SalaryManagement', label: 'Salary Management' },
+      { path: '/HR/WarehouseManagement', label: 'Warehouse Management' },
     ]
   },
 ];
@@ -88,7 +88,7 @@ export default function Sidebar() {
           <Menu />
         </button>
       </div>
-      <nav className="p-2 space-y-2">
+      <nav className="px-2 py-4 space-y-2 overflow-y-auto max-h-[calc(100vh-150px)] scrollbar-thin scrollbar-thumb-gray-300 ">
         {navItems.map((item) =>
           item.children ? (
             <div key={item.label}>
