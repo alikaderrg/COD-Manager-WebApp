@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  User, Store, Truck, MessageSquareText, SlidersHorizontal,
+  User, Store, Truck, MessageSquare, SlidersHorizontal,
   CreditCard, LogOut, Menu
 } from 'lucide-react';
 
