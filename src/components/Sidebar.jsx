@@ -1,123 +1,145 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import {
-  LayoutDashboard, Package, Truck, Undo2, PackageCheck,
-  Boxes, Calculator, Users, Settings, Menu
+  LayoutDashboard, Package, Truck, Undo2, PackageCheck, Boxes,
+  Calculator, Users, Settings, ChevronDown, ChevronRight, Menu
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
   {
-    label: 'Order Management',
-    icon: <Package size={20} />,
-    children: [
+    label: 'Order Management', icon: <Package size={20} />, children: [
       { path: '/orders/overview', label: 'Overview' },
+      { path: '/orders/alerted', label: 'Alerted Orders' },
       { path: '/orders/confirmed', label: 'Confirmed Orders' },
       { path: '/orders/pending', label: 'Pending Orders' },
-    ],
+      { path: '/orders/cancelled', label: 'Cancelled Orders' },
+      { path: '/orders/archived', label: 'Archived Orders' },
+    ]
   },
-  { path: '/dispatch', label: 'Dispatch Center', icon: <Truck size={20} /> },
-  { path: '/returns', label: 'Return Center', icon: <Undo2 size={20} /> },
-  { path: '/picking-packing', label: 'Picking & Packing', icon: <PackageCheck size={20} /> },
-  { path: '/inventory', label: 'Product Inventory', icon: <Boxes size={20} /> },
-  { path: '/accounting', label: 'Accounting', icon: <Calculator size={20} /> },
-  { path: '/hr', label: 'HR & Team', icon: <Users size={20} /> },
-];
-
-const settingsNavItems = [
-  { path: '/settings', label: 'Settings', icon: <Settings size={20} /> },
+  {
+    label: 'Dispatch Center', icon: <Truck size={20} />, children: [
+      { path: '/dispatch/bag-overview', label: 'Bag Overview' },
+      { path: '/dispatch/orders', label: 'Dispatch Orders' },
+      { path: '/dispatch/bag', label: 'Dispatch Bag' },
+    ]
+  },
+  {
+    label: 'Return Center', icon: <Undo2 size={20} />, children: [
+      { path: '/returns/overview', label: 'Returns Overview' },
+      { path: '/returns/reception', label: 'Return Reception' },
+      { path: '/returns/history', label: 'Return History' },
+    ]
+  },
+  {
+    label: 'Picking & Packing', icon: <PackageCheck size={20} />, children: [
+      { path: '/picking-packing/overview', label: 'Overview' },
+      { path: '/picking-packing/picking', label: 'Picking' },
+      { path: '/picking-packing/packing', label: 'Packing Station' },
+    ]
+  },
+  {
+    label: 'Product Inventory', icon: <Boxes size={20} />, children: [
+      { path: '/inventory/list', label: 'Product List' },
+      { path: '/inventory/reception', label: 'Reception' },
+      { path: '/inventory/transfert', label: 'Transfert' },
+      { path: '/inventory/defects', label: 'Defect Management' },
+    ]
+  },
+  {
+    label: 'Accounting', icon: <Calculator size={20} />, children: [
+      { path: '/accounting/overview', label: 'Overview' },
+      { path: '/accounting/expenses', label: 'Expenses & Purchases' },
+      { path: '/accounting/salary', label: 'Payroll & Salary' },
+      { path: '/accounting/invoices', label: 'Invoice Management' },
+    ]
+  },
+  {
+    label: 'HR & Team', icon: <Users size={20} />, children: [
+      { path: '/hr/team', label: 'Team Members' },
+      { path: '/hr/roles', label: 'Roles Management' },
+      { path: '/hr/salary', label: 'Salary Management' },
+      { path: '/hr/warehouse', label: 'Warehouse Management' },
+    ]
+  },
 ];
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
+  const [openMenus, setOpenMenus] = useState({});
   const location = useLocation();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+  const toggleSubmenu = (label) => {
+    setOpenMenus(prev => ({ ...prev, [label]: !prev[label] }));
+  };
 
   return (
     <motion.aside
-      animate={{ width: isOpen ? 256 : 64 }}
-      transition={{ duration: 0.3 }}
-      className={`
-        fixed z-30 top-0 left-0 h-full bg-white border-r shadow-lg
-        rounded-tr-3xl rounded-br-3xl overflow-hidden
-        transition-colors ease-in-out duration-300
-      `}
+      initial={{ width: '4rem' }}
+      animate={{ width: isOpen ? '16rem' : '4rem' }}
+      transition={{ duration: 0.2 }}
+      className="bg-white shadow-lg h-screen border-r z-50 fixed rounded-r-xl"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-        <h1 className={`text-lg font-bold text-purple-600 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>
-          COD MANAGER
-        </h1>
-        <button onClick={toggleSidebar} className="text-gray-500">
-          <Menu size={22} />
+      <div className="flex items-center justify-between p-4 border-b">
+        <h1 className={`text-lg font-bold text-purple-700 ${isOpen ? 'block' : 'hidden'}`}>COD MANAGER</h1>
+        <button onClick={toggleSidebar}>
+          <Menu />
         </button>
       </div>
-
-      {/* Navigation */}
-      <nav className="px-2 py-4 space-y-2">
+      <nav className="p-2 space-y-2">
         {navItems.map((item) =>
           item.children ? (
-            <SidebarGroup key={item.label} item={item} isOpen={isOpen} currentPath={location.pathname} />
+            <div key={item.label}>
+              <button
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
+                  ${item.children.some(child => location.pathname.startsWith(child.path))
+                    ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+                onClick={() => isOpen && toggleSubmenu(item.label)}
+                title={!isOpen ? item.label : undefined}
+              >
+                {item.icon}
+                {isOpen && <span className="flex-1">{item.label}</span>}
+                {isOpen && (openMenus[item.label] ? <ChevronDown size={16} /> : <ChevronRight size={16} />)}
+              </button>
+              {(isOpen && openMenus[item.label]) || (!isOpen && item.children.some(c => location.pathname.startsWith(c.path))) ? (
+                <div className={`ml-6 mt-1 space-y-1 ${isOpen ? '' : 'absolute left-16 bg-white p-2 rounded shadow-md'}`}>
+                  {item.children.map(child => (
+                    <Link
+                      key={child.path}
+                      to={child.path}
+                      className={`block text-sm px-3 py-1 rounded hover:bg-purple-50 ${
+                        location.pathname === child.path ? 'bg-purple-100 text-purple-700' : ''
+                      }`}
+                      title={!isOpen ? child.label : undefined}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           ) : (
-            <SidebarLink key={item.path} to={item.path} label={item.label} icon={item.icon} isOpen={isOpen} active={location.pathname === item.path} />
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors
+                ${location.pathname === item.path ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}
+              title={!isOpen ? item.label : undefined}
+            >
+              {item.icon}
+              {isOpen && <span>{item.label}</span>}
+            </Link>
           )
         )}
       </nav>
-
-      {/* Settings */}
-      <div className="px-2 py-4 mt-auto border-t border-gray-200 bg-gray-50">
-        {settingsNavItems.map((item) => (
-          <SidebarLink key={item.path} to={item.path} label={item.label} icon={item.icon} isOpen={isOpen} active={location.pathname === item.path} />
-        ))}
+      <div className="mt-auto p-2 border-t">
+        <Link to="/settings" className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-gray-100 rounded-md text-muted-foreground">
+          <Settings size={20} />
+          {isOpen && <span>Settings</span>}
+        </Link>
       </div>
     </motion.aside>
   );
 }
-
-const SidebarLink = ({ to, label, icon, isOpen, active }) => (
-  <Link
-    to={to}
-    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors
-      ${active ? 'bg-purple-100 text-purple-700' : 'hover:bg-purple-50'}
-      group`}
-    title={!isOpen ? label : undefined}
-  >
-    {icon}
-    {isOpen && <span>{label}</span>}
-  </Link>
-);
-
-const SidebarGroup = ({ item, isOpen, currentPath }) => {
-  const isActive = item.children.some((child) => currentPath.startsWith(child.path));
-
-  return (
-    <div className="group">
-      <div className={`
-        flex items-center px-3 py-2 rounded-md text-sm font-medium cursor-pointer
-        ${isActive ? 'bg-purple-100 text-purple-700' : 'hover:bg-purple-50'}
-      `}>
-        {item.icon}
-        {isOpen && <span className="ml-3">{item.label}</span>}
-      </div>
-      {(isOpen || !isOpen) && (
-        <div className={`ml-${isOpen ? '6' : '0'} mt-1 space-y-1`}>
-          {item.children.map((child) => (
-            <Link
-              key={child.path}
-              to={child.path}
-              className={`block text-sm px-3 py-1 rounded-md hover:bg-purple-50 transition-colors
-                ${currentPath === child.path ? 'bg-purple-100 text-purple-700' : ''}
-                ${!isOpen ? 'ml-3 text-xs' : ''}
-              `}
-              title={!isOpen ? child.label : undefined}
-            >
-              {child.label}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};

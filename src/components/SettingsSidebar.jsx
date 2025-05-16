@@ -1,41 +1,42 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Settings, User, Store, Truck, MessageCircle, Sliders, CreditCard, LogOut, Menu } from 'lucide-react';
+import {
+  User, Store, Truck, MessageSquareText, SlidersHorizontal,
+  CreditCard, LogOut, Menu
+} from 'lucide-react';
 
-const settingsNav = [
-  { path: '/settings/profile', label: 'Profile', icon: <User size={18} /> },
-  { path: '/settings/store', label: 'Store Integration', icon: <Store size={18} /> },
-  { path: '/settings/courier', label: 'Courier Integration', icon: <Truck size={18} /> },
-  { path: '/settings/whatsapp', label: 'WhatsApp', icon: <MessageCircle size={18} /> },
-  { path: '/settings/app', label: 'Preferences', icon: <Sliders size={18} /> },
-  { path: '/settings/plans', label: 'Plans', icon: <CreditCard size={18} /> },
-  { path: '/settings/logout', label: 'Logout', icon: <LogOut size={18} /> },
+const settingsItems = [
+  { path: '/settings/profile', label: 'Profile', icon: <User size={20} /> },
+  { path: '/settings/store', label: 'Store Integration', icon: <Store size={20} /> },
+  { path: '/settings/courier', label: 'Courier Integration', icon: <Truck size={20} /> },
+  { path: '/settings/whatsapp', label: 'WhatsApp', icon: <MessageSquareText size={20} /> },
+  { path: '/settings/preferences', label: 'Preferences', icon: <SlidersHorizontal size={20} /> },
+  { path: '/settings/plans', label: 'Plans', icon: <CreditCard size={20} /> },
+  { path: '/settings/logout', label: 'Logout', icon: <LogOut size={20} /> },
 ];
 
 export default function SettingsSidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
 
-  const sidebarVariants = {
-    open: { width: '16rem' },
-    closed: { width: '4rem' },
-  };
+  const toggleSidebar = () => setIsOpen(!isOpen);
 
   return (
     <motion.aside
-      animate={isOpen ? 'open' : 'closed'}
-      variants={sidebarVariants}
-      className="bg-white h-screen shadow-xl border-r border-gray-200 fixed z-40 transition-all duration-300 rounded-tr-xl rounded-br-xl"
+      initial={{ width: '4rem' }}
+      animate={{ width: isOpen ? '16rem' : '4rem' }}
+      transition={{ duration: 0.2 }}
+      className="bg-white shadow-lg h-screen border-r z-40 fixed left-16 top-0 rounded-r-xl"
     >
-      <div className="flex items-center justify-between px-4 py-3 border-b">
-        {isOpen && <h2 className="text-lg font-bold text-purple-600">Settings</h2>}
-        <button onClick={() => setIsOpen(!isOpen)} className="text-gray-500">
-          <Menu size={20} />
+      <div className="flex items-center justify-between p-4 border-b">
+        <h1 className={`text-lg font-bold text-purple-600 ${isOpen ? 'block' : 'hidden'}`}>Settings</h1>
+        <button onClick={toggleSidebar} className="ml-auto text-muted-foreground">
+          <Menu />
         </button>
       </div>
-      <nav className="p-2 space-y-2">
-        {settingsNav.map((item) => (
+      <nav className="px-2 py-4 space-y-2">
+        {settingsItems.map(item => (
           <Link
             key={item.path}
             to={item.path}
