@@ -166,3 +166,28 @@ export const getCourierStatus = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch courier status' });
   }
 };
+
+// Delete many orders
+export async function deleteManyOrders(req, res) {
+  try {
+    const { orderIds } = req.body;
+
+    if (!Array.isArray(orderIds) || orderIds.length === 0) {
+      return res.status(400).json({ error: 'No order IDs provided' });
+    }
+
+    await prisma.order.deleteMany({
+      where: {
+        id: {
+          in: orderIds
+        },
+        userId: req.user.id
+      }
+    });
+
+    res.status(200).json({ message: 'Orders deleted successfully' });
+  } catch (error) {
+    console.error('Bulk delete error:', error.message);
+    res.status(500).json({ error: 'Failed to delete orders' });
+  }
+}

@@ -1,6 +1,72 @@
-import React from 'react';
-import OrderManagementOverview from './Overview';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-export default function PendingOrders() {
-  return <OrderManagementOverview filterStatus="Created" />;
+export default function Created() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchCreatedOrders = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/orders?status=Created`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setOrders(res.data.orders || []);
+      } catch (err) {
+        setError('Failed to load created orders');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCreatedOrders();
+  }, []);
+
+  return (
+    <div className="p-4">
+      <h2 className="text-2xl font-semibold mb-4 text-purple-700">Confirmed Orders</h2>
+      {loading ? (
+        <div className="flex justify-center items-center h-40">
+          <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : error ? (
+        <p className="text-red-600">{error}</p>
+      ) : orders.length === 0 ? (
+        <p className="text-gray-500">No created orders found.</p>
+      ) : (
+        <OrderTable orders={orders} />
+      )}
+    </div>
+  );
 }
+
+const OrderTable = ({ orders }) => (
+  <div className="overflow-x-auto">
+    <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+      <thead className="bg-purple-100 text-purple-800">
+        <tr>
+          <th className="py-2 px-4 text-left">Order ID</th>
+          <th className="py-2 px-4 text-left">Customer</th>
+          <th className="py-2 px-4 text-left">Phone</th>
+          <th className="py-2 px-4 text-left">Total</th>
+          <th className="py-2 px-4 text-left">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {orders.map((order) => (
+          <tr key={order.id} className="border-b hover:bg-purple-50">
+            <td className="py-2 px-4">{order.id}</td>
+            <td className="py-2 px-4">{order.customerName}</td>
+            <td className="py-2 px-4">{order.phoneNumber}</td>
+            <td className="py-2 px-4">{order.sellingPrice}</td>
+            <td className="py-2 px-4 text-green-600 font-medium">
+              {order.confirmationStatus}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
