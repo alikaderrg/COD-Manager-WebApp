@@ -1,8 +1,7 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Truck, Undo2, PackageCheck, Boxes,
-  Calculator, Users, Settings, ChevronDown, ChevronRight, Menu
+  Calculator, Users, Settings, ChevronRight, Menu
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -67,10 +66,15 @@ const navItems = [
 
 export default function Sidebar({ isOpen, setIsOpen, setActiveSection }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const handleSectionClick = (item) => {
+  const handleSectionClick = (item, shouldNavigate = false) => {
     if (item.children) {
       setActiveSection(item.label);
+      // If shouldNavigate is true, navigate to the first page of the section
+      if (shouldNavigate && item.children.length > 0) {
+        navigate(item.children[0].path);
+      }
     } else {
       setActiveSection('');
     }
@@ -95,7 +99,7 @@ export default function Sidebar({ isOpen, setIsOpen, setActiveSection }) {
           <div key={item.label || item.path}>
             {item.children ? (
               <button
-                onClick={() => handleSectionClick(item)}
+                onClick={() => handleSectionClick(item, true)}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
                 ${item.children.some(c => location.pathname.startsWith(c.path))
                   ? 'bg-purple-100 text-purple-700'
