@@ -98,34 +98,16 @@ export default function App() {
   const isSettingsPage = location.pathname.startsWith('/settings');
   const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(true);
 
-  // Calculate left margin based on sidebar states
-  const calculateMargin = () => {
-    if (isSettingsPage) {
-      return 'ml-64'; // Settings page margin
-    }
+  // Simple margin calculation
+  let leftMargin = 'ml-16'; // Default for collapsed sidebar
 
-    // Convert rem to pixels for calculation
-    const mainSidebarWidth = isSidebarOpen ? 16 : 4; // in rem
-
-    if (!activeSection) {
-      // No subsidebar
-      return mainSidebarWidth === 16 ? 'ml-64' : 'ml-16';
-    }
-
-    // Both sidebars
-    const subSidebarWidth = isSubSidebarCollapsed ? 4 : 16; // in rem
-    const totalWidth = mainSidebarWidth + subSidebarWidth;
-
-    // Return appropriate Tailwind class based on total width
-    if (totalWidth === 8) return 'ml-32'; // 4rem + 4rem
-    if (totalWidth === 20) return 'ml-80'; // 4rem + 16rem or 16rem + 4rem
-    if (totalWidth === 32) return 'ml-[32rem]'; // 16rem + 16rem
-
-    // Fallback
-    return `ml-[${totalWidth}rem]`;
-  };
-
-  const leftMargin = calculateMargin();
+  if (isSettingsPage) {
+    leftMargin = 'ml-64'; // Settings page margin
+  } else if (isSidebarOpen) {
+    leftMargin = activeSection ? 'ml-80' : 'ml-64'; // Main sidebar open + subsidebar or just main sidebar
+  } else {
+    leftMargin = activeSection ? 'ml-32' : 'ml-16'; // Main sidebar collapsed + subsidebar or just main sidebar collapsed
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -146,7 +128,7 @@ export default function App() {
       )}
       {!isAuthPage && isSettingsPage && <SettingsSidebar />}
 
-      <main className={`flex-1 transition-all duration-300 px-6 py-6 ${leftMargin} relative z-40 overflow-x-hidden`}>
+      <main className={`flex-1 transition-all duration-300 px-6 py-6 ${leftMargin} relative z-10`}>
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />

@@ -98,7 +98,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: './', // Changed for better compatibility with different hosting environments
+  base: '/',
   build: {
     outDir: 'dist',
     rollupOptions: {

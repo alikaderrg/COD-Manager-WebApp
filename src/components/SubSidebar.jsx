@@ -1,4 +1,4 @@
-import { useState } from 'react';
+
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -71,47 +71,31 @@ export default function SubSidebar({
   activeSection,
   mainSidebarOpen,
   onCollapsedChange,
-  isCollapsed: externalIsCollapsed
+  isCollapsed = true
 }) {
   const location = useLocation();
   const links = sectionMap[activeSection] || [];
-  const [internalIsCollapsed, setInternalIsCollapsed] = useState(false);
-
-  // Use external state if provided, otherwise use internal state
-  const isCollapsed = externalIsCollapsed !== undefined ? externalIsCollapsed : internalIsCollapsed;
 
   // If no active section, don't render the sidebar
   if (!activeSection) return null;
 
   // Handle collapse state change
   const handleCollapseToggle = () => {
-    const newState = !isCollapsed;
-
-    // Update internal state if needed
-    if (externalIsCollapsed === undefined) {
-      setInternalIsCollapsed(newState);
-    }
-
-    // Notify parent component if callback provided
     if (onCollapsedChange) {
-      onCollapsedChange(newState);
+      onCollapsedChange(!isCollapsed);
     }
   };
 
   return (
     <motion.aside
-      initial={{ opacity: 0.5 }}
-      animate={{
-        opacity: 1,
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      style={{
         width: isCollapsed ? '4rem' : '16rem',
-        left: mainSidebarOpen ? '16rem' : '4rem',
-        zIndex: 30
+        left: mainSidebarOpen ? '16rem' : '4rem'
       }}
-      transition={{
-        duration: 0.3,
-        ease: "easeInOut"
-      }}
-      className="bg-white border-r border-gray-200 shadow-md h-screen fixed top-0 rounded-r-xl overflow-hidden"
+      className="bg-white border-r border-gray-200 shadow-md h-screen fixed top-0 z-20 rounded-r-xl overflow-hidden"
     >
       <div className="flex items-center justify-between p-4 border-b">
         {!isCollapsed && (
