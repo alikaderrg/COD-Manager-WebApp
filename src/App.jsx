@@ -96,8 +96,36 @@ export default function App() {
   }
 
   const isSettingsPage = location.pathname.startsWith('/settings');
+  const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(false);
 
-  const leftMargin = isSidebarOpen ? (isSettingsPage ? 'ml-[32rem]' : 'ml-64') : 'ml-16';
+  // Calculate left margin based on sidebar states
+  let leftMargin = 'ml-16'; // Default: collapsed main sidebar only
+
+  if (isSettingsPage) {
+    leftMargin = 'ml-[32rem]';
+  } else if (isSidebarOpen) {
+    // Main sidebar is open
+    if (activeSection) {
+      // Both sidebars are visible
+      leftMargin = isSubSidebarCollapsed
+        ? 'ml-[20rem]' // 16rem (main) + 4rem (sub collapsed)
+        : 'ml-[32rem]'; // 16rem (main) + 16rem (sub expanded)
+    } else {
+      // Only main sidebar is visible
+      leftMargin = 'ml-64'; // 16rem
+    }
+  } else {
+    // Main sidebar is collapsed
+    if (activeSection) {
+      // Main sidebar collapsed, sub sidebar visible
+      leftMargin = isSubSidebarCollapsed
+        ? 'ml-[8rem]' // 4rem (main) + 4rem (sub collapsed)
+        : 'ml-[20rem]'; // 4rem (main) + 16rem (sub expanded)
+    } else {
+      // Only collapsed main sidebar
+      leftMargin = 'ml-16'; // 4rem
+    }
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -108,8 +136,12 @@ export default function App() {
           setActiveSection={setActiveSection}
         />
       )}
-      {!isAuthPage && !isSettingsPage && isSidebarOpen && (
-        <SubSidebar activeSection={activeSection} />
+      {!isAuthPage && !isSettingsPage && activeSection && (
+        <SubSidebar
+          activeSection={activeSection}
+          mainSidebarOpen={isSidebarOpen}
+          onCollapsedChange={setIsSubSidebarCollapsed}
+        />
       )}
       {!isAuthPage && isSettingsPage && <SettingsSidebar />}
 
