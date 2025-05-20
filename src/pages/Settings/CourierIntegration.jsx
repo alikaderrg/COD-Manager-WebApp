@@ -16,17 +16,17 @@ const headers = {
 
 // List of delivery companies
 const deliveryCompanies = [
-  { id: 'maystro', name: 'Maystro Delivery', logo: '/images/maystro.svg' },
-  { id: 'zr', name: 'Zr Express', logo: '/images/zr.svg' },
-  { id: 'yalidine', name: 'Yalidine Express', logo: '/images/yalidine.svg' },
-  { id: 'noest', name: 'Nord et ouest (Noest)', logo: '/images/noest.svg' },
-  { id: 'dhd', name: 'Dhd Livraison Express', logo: '/images/dhd.svg' },
-  { id: 'guepex', name: 'Guepex Express', logo: '/images/guepex.svg' },
-  { id: 'yalitec', name: 'Yalitec', logo: '/images/yalitec.svg' },
-  { id: '48h', name: '48h Courrier Express', logo: '/images/48h.svg' },
-  { id: 'anderson', name: 'Anderson National Express', logo: '/images/anderson.svg' },
-  { id: 'world', name: 'World Express', logo: '/images/world.svg' },
-  { id: 'ecom', name: 'E-com Delivery', logo: '/images/ecom.svg' }
+  { id: 'maystro', name: 'Maystro Delivery', logo: '/images/maystro.png' },
+  { id: 'zr', name: 'Zr Express', logo: '/images/zr.png' },
+  { id: 'yalidine', name: 'Yalidine Express', logo: '/images/yalidine.png' },
+  { id: 'noest', name: 'Nord et ouest (Noest)', logo: '/images/nord.png' },
+  { id: 'dhd', name: 'Dhd Livraison Express', logo: '/images/dhd.png' },
+  { id: 'guepex', name: 'Guepex Express', logo: '/images/guepex.png' },
+  { id: 'yalitec', name: 'Yalitec', logo: '/images/yalitec.png' },
+  { id: '48h', name: '48h Courrier Express', logo: '/images/48h.png' },
+  { id: 'anderson', name: 'Anderson National Express', logo: '/images/anderson.png' },
+  { id: 'world', name: 'World Express', logo: '/images/world.png' },
+  { id: 'ecom', name: 'E-com Delivery', logo: '/images/ecom.png' }
 ];
 
 export default function CourierIntegration() {
@@ -233,12 +233,15 @@ export default function CourierIntegration() {
                         Active
                       </Badge>
                     )}
-                    <div className="h-40 flex items-center justify-center p-4 bg-gray-50">
-                      <img
-                        src={company.logo}
-                        alt={`${company.name} logo`}
-                        className="max-h-full max-w-full object-contain"
-                      />
+                    <div className="h-40 flex items-center justify-center p-4 bg-gray-50 rounded-t-lg">
+                      <div className="w-full h-full flex items-center justify-center">
+                        <img
+                          src={company.logo}
+                          alt={`${company.name} logo`}
+                          className="max-h-28 max-w-[80%] object-contain"
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <CardContent className="p-4">
@@ -283,12 +286,15 @@ export default function CourierIntegration() {
                   className="flex items-center justify-between p-4 border rounded-lg"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 flex items-center justify-center bg-gray-50 rounded-md p-2">
-                      <img
-                        src={company.logo}
-                        alt={`${company.name} logo`}
-                        className="max-h-full max-w-full object-contain"
-                      />
+                    <div className="w-20 h-20 flex items-center justify-center bg-gray-50 rounded-md p-2 border border-gray-100">
+                      <div className="w-full h-full flex items-center justify-center">
+                        <img
+                          src={company.logo}
+                          alt={`${company.name} logo`}
+                          className="max-h-14 max-w-[80%] object-contain"
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </div>
                     </div>
                     <div>
                       <h3 className="font-semibold">{company.name}</h3>
@@ -335,14 +341,17 @@ export default function CourierIntegration() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-3">
               {selectedCompany && (
                 <>
-                  <img
-                    src={selectedCompany.logo}
-                    alt={`${selectedCompany.name} logo`}
-                    className="w-6 h-6 object-contain"
-                  />
+                  <div className="w-8 h-8 flex items-center justify-center bg-gray-50 rounded-md p-1">
+                    <img
+                      src={selectedCompany.logo}
+                      alt={`${selectedCompany.name} logo`}
+                      className="max-h-6 max-w-[80%] object-contain"
+                      style={{ objectFit: 'contain' }}
+                    />
+                  </div>
                   {selectedCompany.name} Integration
                 </>
               )}

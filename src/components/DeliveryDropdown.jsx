@@ -90,11 +90,12 @@ export default function DeliveryDropdown({ orderId, onExport }) {
                 disabled={loading}
               >
                 <div className="flex items-center w-full">
-                  <div className="w-5 h-5 mr-2 flex-shrink-0">
+                  <div className="w-6 h-6 mr-2 flex-shrink-0 bg-gray-50 rounded-sm p-0.5 flex items-center justify-center">
                     <img
                       src={company.logo}
                       alt={`${company.name} logo`}
-                      className="w-full h-full object-contain"
+                      className="max-h-4 max-w-[80%] object-contain"
+                      style={{ objectFit: 'contain' }}
                     />
                   </div>
                   <span>{company.name}</span>
