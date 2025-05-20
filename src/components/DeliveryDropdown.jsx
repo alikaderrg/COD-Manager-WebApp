@@ -110,7 +110,7 @@ export default function DeliveryDropdown({ orderId, onExport }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => alert('This would navigate to the settings page in the full app')}
+          onClick={() => window.location.href = '#/settings/courier'}
         >
           Manage Integrations
         </DropdownMenuItem>
