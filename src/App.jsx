@@ -96,35 +96,14 @@ export default function App() {
   }
 
   const isSettingsPage = location.pathname.startsWith('/settings');
-  const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(false);
 
-  // Calculate left margin based on sidebar states
-  let leftMargin = 'ml-16'; // Default: collapsed main sidebar only
+  // Simplified margin calculation
+  let leftMargin = 'ml-16'; // Default for collapsed sidebar
 
   if (isSettingsPage) {
-    leftMargin = 'ml-[32rem]';
+    leftMargin = 'ml-64'; // Settings page margin
   } else if (isSidebarOpen) {
-    // Main sidebar is open
-    if (activeSection) {
-      // Both sidebars are visible
-      leftMargin = isSubSidebarCollapsed
-        ? 'ml-[20rem]' // 16rem (main) + 4rem (sub collapsed)
-        : 'ml-[32rem]'; // 16rem (main) + 16rem (sub expanded)
-    } else {
-      // Only main sidebar is visible
-      leftMargin = 'ml-64'; // 16rem
-    }
-  } else {
-    // Main sidebar is collapsed
-    if (activeSection) {
-      // Main sidebar collapsed, sub sidebar visible
-      leftMargin = isSubSidebarCollapsed
-        ? 'ml-[8rem]' // 4rem (main) + 4rem (sub collapsed)
-        : 'ml-[20rem]'; // 4rem (main) + 16rem (sub expanded)
-    } else {
-      // Only collapsed main sidebar
-      leftMargin = 'ml-16'; // 4rem
-    }
+    leftMargin = 'ml-64'; // Expanded sidebar
   }
 
   return (
@@ -140,7 +119,6 @@ export default function App() {
         <SubSidebar
           activeSection={activeSection}
           mainSidebarOpen={isSidebarOpen}
-          onCollapsedChange={setIsSubSidebarCollapsed}
         />
       )}
       {!isAuthPage && isSettingsPage && <SettingsSidebar />}

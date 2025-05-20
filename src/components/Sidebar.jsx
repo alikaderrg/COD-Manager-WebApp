@@ -85,7 +85,7 @@ export default function Sidebar({ isOpen, setIsOpen, setActiveSection }) {
       initial={{ width: '4rem' }}
       animate={{ width: isOpen ? '16rem' : '4rem' }}
       transition={{ duration: 0.2 }}
-      className="bg-white shadow-purple-lg h-screen border-r z-50 fixed left-0 top-0 rounded-r-xl"
+      className="bg-white shadow-lg h-screen border-r z-50 fixed left-0 top-0 rounded-r-xl"
     >
       <div className="flex items-center justify-between p-4 border-b">
         <h1 className={`text-lg font-bold text-purple-700 ${isOpen ? 'block' : 'hidden'}`}>

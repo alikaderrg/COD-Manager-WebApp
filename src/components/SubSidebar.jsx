@@ -15,7 +15,6 @@ import {
   RotateCcw,
   ClipboardCheck,
   ShoppingBag,
-  Boxes,
   FileText,
   DollarSign,
   Users,
@@ -68,7 +67,7 @@ const sectionMap = {
   ],
 };
 
-export default function SubSidebar({ activeSection, mainSidebarOpen, onCollapsedChange }) {
+export default function SubSidebar({ activeSection, mainSidebarOpen }) {
   const location = useLocation();
   const links = sectionMap[activeSection] || [];
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -78,18 +77,13 @@ export default function SubSidebar({ activeSection, mainSidebarOpen, onCollapsed
 
   // Handle collapse state change
   const handleCollapseToggle = () => {
-    const newState = !isCollapsed;
-    setIsCollapsed(newState);
-    if (onCollapsedChange) {
-      onCollapsedChange(newState);
-    }
+    setIsCollapsed(!isCollapsed);
   };
 
   return (
     <motion.aside
-      initial={{ x: -300, opacity: 0 }}
+      initial={{ opacity: 0.5 }}
       animate={{
-        x: 0,
         opacity: 1,
         width: isCollapsed ? '4rem' : '16rem',
         left: mainSidebarOpen ? '16rem' : '4rem'
@@ -98,7 +92,7 @@ export default function SubSidebar({ activeSection, mainSidebarOpen, onCollapsed
         duration: 0.3,
         ease: "easeInOut"
       }}
-      className="bg-white border-r border-gray-200 shadow-purple-md h-screen fixed top-0 z-40 rounded-r-xl overflow-hidden"
+      className="bg-white border-r border-gray-200 shadow-md h-screen fixed top-0 z-40 rounded-r-xl overflow-hidden"
     >
       <div className="flex items-center justify-between p-4 border-b">
         {!isCollapsed && (

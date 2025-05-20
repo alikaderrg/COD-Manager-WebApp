@@ -98,7 +98,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: '/', // ✅ Important for Vercel routing
+  base: './', // Changed for better compatibility with different hosting environments
   build: {
     outDir: 'dist',
     rollupOptions: {
