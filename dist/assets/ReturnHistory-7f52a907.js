@@ -1,1 +1,0 @@
-import{j as e}from"./index-c0be494c.js";function t(){return e.jsx("div",{className:"p-4",children:e.jsxs("h2",{className:"text-xl font-bold",children:["Return History",e.jsx("p",{className:"text-gray-500",children:"Here you can see all the returns you have made."})]})})}export{t as default};
