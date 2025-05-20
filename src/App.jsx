@@ -61,27 +61,31 @@ export default function App() {
   // Set active section based on URL path
   useEffect(() => {
     const path = location.pathname;
+    // For HashRouter compatibility
+    const hashPath = location.hash.replace('#', '');
+    const effectivePath = hashPath || path;
 
-    if (path.startsWith('/OrderManagement')) {
+    if (effectivePath.includes('OrderManagement')) {
       setActiveSection('Order Management');
-    } else if (path.startsWith('/DispatchCenter')) {
+    } else if (effectivePath.includes('DispatchCenter')) {
       setActiveSection('Dispatch Center');
-    } else if (path.startsWith('/ReturnCenter')) {
+    } else if (effectivePath.includes('ReturnCenter')) {
       setActiveSection('Return Center');
-    } else if (path.startsWith('/PickingPacking')) {
+    } else if (effectivePath.includes('PickingPacking')) {
       setActiveSection('Picking & Packing');
-    } else if (path.startsWith('/ProductInventory')) {
+    } else if (effectivePath.includes('ProductInventory')) {
       setActiveSection('Product Inventory');
-    } else if (path.startsWith('/Accounting')) {
+    } else if (effectivePath.includes('Accounting')) {
       setActiveSection('Accounting');
-    } else if (path.startsWith('/HR')) {
+    } else if (effectivePath.includes('HR')) {
       setActiveSection('HR & Team');
     } else {
       setActiveSection('');
     }
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
-  const isAuthPage = ['/login', '/signup'].includes(location.pathname);
+  const isAuthPage = ['/login', '/signup'].includes(location.pathname) ||
+                  ['#/login', '#/signup'].includes(location.hash);
 
   if (!tokenChecked) return null;
 
@@ -95,7 +99,8 @@ export default function App() {
     );
   }
 
-  const isSettingsPage = location.pathname.startsWith('/settings');
+  const isSettingsPage = location.pathname.startsWith('/settings') ||
+                      location.hash.startsWith('#/settings');
   const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(true);
 
   // Simple margin calculation

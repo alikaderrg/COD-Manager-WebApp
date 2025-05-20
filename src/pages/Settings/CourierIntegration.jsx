@@ -16,17 +16,17 @@ const headers = {
 
 // List of delivery companies
 const deliveryCompanies = [
-  { id: 'maystro', name: 'Maystro Delivery', logo: '/images/maystro.png' },
-  { id: 'zr', name: 'Zr Express', logo: '/images/zr.png' },
-  { id: 'yalidine', name: 'Yalidine Express', logo: '/images/yalidine.png' },
-  { id: 'noest', name: 'Nord et ouest (Noest)', logo: '/images/nord.png' },
-  { id: 'dhd', name: 'Dhd Livraison Express', logo: '/images/dhd.png' },
-  { id: 'guepex', name: 'Guepex Express', logo: '/images/guepex.png' },
-  { id: 'yalitec', name: 'Yalitec', logo: '/images/yalitec.png' },
-  { id: '48h', name: '48h Courrier Express', logo: '/images/48h.png' },
-  { id: 'anderson', name: 'Anderson National Express', logo: '/images/anderson.png' },
-  { id: 'world', name: 'World Express', logo: '/images/world.png' },
-  { id: 'ecom', name: 'E-com Delivery', logo: '/images/ecom.png' }
+  { id: 'maystro', name: 'Maystro Delivery', logo: './images/maystro.png' },
+  { id: 'zr', name: 'Zr Express', logo: './images/zr.png' },
+  { id: 'yalidine', name: 'Yalidine Express', logo: './images/yalidine.png' },
+  { id: 'noest', name: 'Nord et ouest (Noest)', logo: './images/nord.png' },
+  { id: 'dhd', name: 'Dhd Livraison Express', logo: './images/dhd.png' },
+  { id: 'guepex', name: 'Guepex Express', logo: './images/guepex.png' },
+  { id: 'yalitec', name: 'Yalitec', logo: './images/yalitec.png' },
+  { id: '48h', name: '48h Courrier Express', logo: './images/48h.png' },
+  { id: 'anderson', name: 'Anderson National Express', logo: './images/anderson.png' },
+  { id: 'world', name: 'World Express', logo: './images/world.png' },
+  { id: 'ecom', name: 'E-com Delivery', logo: './images/ecom.png' }
 ];
 
 export default function CourierIntegration() {
