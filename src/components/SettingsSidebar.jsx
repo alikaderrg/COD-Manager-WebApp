@@ -27,7 +27,7 @@ export default function SettingsSidebar() {
       initial={{ width: '4rem' }}
       animate={{ width: isOpen ? '16rem' : '4rem' }}
       transition={{ duration: 0.2 }}
-      className="bg-white shadow-lg h-screen border-r z-40 fixed left-16 top-0 rounded-r-xl"
+      className="bg-white shadow-lg h-screen border-r z-20 fixed left-16 top-0 rounded-r-xl"
     >
       <div className="flex items-center justify-between p-4 border-b">
         <h1 className={`text-lg font-bold text-purple-600 ${isOpen ? 'block' : 'hidden'}`}>Settings</h1>
