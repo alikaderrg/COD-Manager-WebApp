@@ -106,9 +106,33 @@ export default function App() {
 
   const isSettingsPage = location.pathname.startsWith('/settings') ||
                       location.hash.startsWith('#/settings');
+  const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(true);
 
-  // IMPORTANT: Use simple, fixed margins instead of dynamic calculations
-  // This is the key change to prevent layout issues
+  // Calculate the main content margin based on sidebar states
+  const getMainContentClass = () => {
+    // Base padding and transition
+    let classes = "flex-1 p-6 transition-all duration-300 ";
+
+    // For settings page
+    if (isSettingsPage) {
+      return classes + (isSidebarOpen ? "ml-64" : "ml-16");
+    }
+
+    // For pages with subsidebar
+    if (activeSection) {
+      if (isSidebarOpen) {
+        // Main sidebar open
+        return classes + (isSubSidebarCollapsed ? "ml-80" : "ml-[20rem]");
+      } else {
+        // Main sidebar collapsed
+        return classes + (isSubSidebarCollapsed ? "ml-32" : "ml-[16rem]");
+      }
+    }
+
+    // Default case - just main sidebar
+    return classes + (isSidebarOpen ? "ml-64" : "ml-16");
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {!isAuthPage && (
@@ -123,6 +147,8 @@ export default function App() {
         <SubSidebar
           activeSection={activeSection}
           mainSidebarOpen={isSidebarOpen}
+          onCollapsedChange={setIsSubSidebarCollapsed}
+          isCollapsed={isSubSidebarCollapsed}
         />
       )}
 
@@ -130,8 +156,8 @@ export default function App() {
         <SettingsSidebar />
       )}
 
-      {/* Main content with fixed margin */}
-      <main className="flex-1 p-6 ml-64">
+      {/* Main content with dynamic margin based on sidebar states */}
+      <main className={getMainContentClass()}>
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
