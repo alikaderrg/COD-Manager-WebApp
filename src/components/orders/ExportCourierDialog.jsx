@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
+import DeliveryDropdown from '@/components/DeliveryDropdown';
 import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -62,7 +63,18 @@ export default function ExportCourierDialog({ allOrders = [], onOrdersExported }
 
   return (
     <>
-      <Button variant="outline" onClick={() => setOpen(true)}>Export to Courier</Button>
+      <div className="flex items-center gap-2">
+        <Button variant="outline" onClick={() => setOpen(true)}>Bulk Export</Button>
+        <DeliveryDropdown
+          orderId={pendingExport.length > 0 ? pendingExport[0].id : null}
+          onExport={(companyId, orderId) => {
+            // In a real app, you would call your backend API
+            // For now, we'll simulate a successful export
+            const trackingId = `TRK-${Math.floor(Math.random() * 1000000)}`;
+            onOrdersExported(orderId, trackingId);
+          }}
+        />
+      </div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-xl">
           <DialogHeader>

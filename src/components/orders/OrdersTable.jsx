@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -24,7 +24,8 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { MoreHorizontal, MessageSquare, Printer, ExternalLink, Edit2 } from 'lucide-react';
+import { MoreHorizontal, MessageSquare, Printer, Edit2 } from 'lucide-react';
+import DeliveryDropdown from '@/components/DeliveryDropdown';
 import StatusBadge from './StatusBadge';
 
 const confirmationStatuses = ['Created', 'Alerted', 'Confirmed', 'Cancelled', 'Deleted'];
@@ -137,7 +138,18 @@ const OrdersTable = ({ orders = [], onUpdateOrder, onExportOrder, onSendWhatsApp
               <TableCell>{order.quantity}</TableCell>
               <TableCell>{order.sellingPrice}</TableCell>
               <TableCell>
-                <Badge variant={order.exportStatus === 'Exported' ? 'confirmed' : 'outline'}>{order.exportStatus}</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant={order.exportStatus === 'Exported' ? 'confirmed' : 'outline'}>{order.exportStatus}</Badge>
+                  {order.confirmationStatus === 'Confirmed' && order.exportStatus !== 'Exported' && (
+                    <DeliveryDropdown
+                      orderId={order.id}
+                      onExport={(companyId, orderId) => {
+                        const trackingId = `TRK-${Math.floor(Math.random() * 1000000)}`;
+                        onExportOrder(orderId, trackingId);
+                      }}
+                    />
+                  )}
+                </div>
               </TableCell>
               <TableCell>
                 <Button variant="ghost" size="icon" onClick={() => onSendWhatsApp(order.id, order.phoneNumber, order.customerName)}>
@@ -150,8 +162,14 @@ const OrdersTable = ({ orders = [], onUpdateOrder, onExportOrder, onSendWhatsApp
                     <Button variant="ghost" size="icon"><MoreHorizontal size={16} /></Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onPrintLabel(order.id)} disabled={!order.trackingId}>Print Label</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onExportOrder(order.id)}>Export</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onPrintLabel(order.id)} disabled={!order.trackingId}>
+                      <Printer className="mr-2 h-4 w-4" />
+                      Print Label
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onExportOrder(order.id, `TRK-${Math.floor(Math.random() * 1000000)}`)}>
+                      <Edit2 className="mr-2 h-4 w-4" />
+                      Edit Order
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
