@@ -50,7 +50,9 @@ export default function App() {
   const location = useLocation();
   const [tokenChecked, setTokenChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeSection, setActiveSection] = useState('');
+  const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -105,43 +107,39 @@ export default function App() {
 
   const isSettingsPage = location.pathname.startsWith('/settings') ||
                       location.hash.startsWith('#/settings');
-  const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(true);
 
-  // IMPORTANT: Use a completely fixed layout to avoid blank screen issues
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar container - fixed width */}
-      <div className="fixed left-0 top-0 h-full" style={{ width: '16rem' }}>
-        {!isAuthPage && (
+      {/* Fixed position sidebars */}
+      {!isAuthPage && (
+        <div className="fixed left-0 top-0 h-full z-30">
           <Sidebar
-            isOpen={true} // Always keep it open
-            setIsOpen={() => {}} // No-op function
+            isOpen={isSidebarOpen}
+            setIsOpen={setIsSidebarOpen}
             setActiveSection={setActiveSection}
           />
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Sub sidebar container - fixed position */}
       {!isAuthPage && !isSettingsPage && activeSection && (
-        <div className="fixed left-64 top-0 h-full">
+        <div className="fixed top-0 h-full z-20" style={{ left: isSidebarOpen ? '16rem' : '4rem' }}>
           <SubSidebar
             activeSection={activeSection}
-            mainSidebarOpen={true} // Always true
+            mainSidebarOpen={isSidebarOpen}
             onCollapsedChange={setIsSubSidebarCollapsed}
             isCollapsed={isSubSidebarCollapsed}
           />
         </div>
       )}
 
-      {/* Settings sidebar - fixed position */}
       {!isAuthPage && isSettingsPage && (
-        <div className="fixed left-64 top-0 h-full">
+        <div className="fixed left-16 top-0 h-full z-20">
           <SettingsSidebar />
         </div>
       )}
 
-      {/* Main content with fixed margin */}
-      <main className="flex-1 p-6 ml-80">
+      {/* Main content with FIXED margin - NO dynamic calculations */}
+      <main className="flex-1 p-6 ml-64">
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
