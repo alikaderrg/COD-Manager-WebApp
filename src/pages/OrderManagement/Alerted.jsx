@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import EmptyOrderTable from '@/components/orders/EmptyOrderTable';
 
 export default function Alerted() {
   const [orders, setOrders] = useState([]);
@@ -38,7 +39,7 @@ export default function Alerted() {
       ) : error ? (
         <p className="text-red-600">{error}</p>
       ) : orders.length === 0 ? (
-        <p className="text-gray-500">No alerted orders found.</p>
+        <EmptyOrderTable columns="simple" />
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import EmptyOrderTable from '@/components/orders/EmptyOrderTable';
 
 export default function Deleted() {
   const [orders, setOrders] = useState([]);
@@ -34,7 +35,7 @@ export default function Deleted() {
       ) : error ? (
         <p className="text-red-600">{error}</p>
       ) : orders.length === 0 ? (
-        <p className="text-gray-500">No deleted orders found.</p>
+        <EmptyOrderTable columns="simple" />
       ) : (
         <OrderTable orders={orders} />
       )}

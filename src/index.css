@@ -113,9 +113,12 @@ body {
 .scale-content {
   transform: scale(0.8);
   transform-origin: top left;
-  width: 120%; /* Reduced from 135% to fix spacing */
-  max-width: 120%; /* Ensure content stretches appropriately */
+  width: 125%; /* Adjusted to fill available space */
+  max-width: 125%; /* Ensure content stretches appropriately */
   overflow-x: hidden; /* Prevent horizontal scrolling */
+  min-height: 100vh; /* Ensure content fills vertical space */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Empty table styling */
