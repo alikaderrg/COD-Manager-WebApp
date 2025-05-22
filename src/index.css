@@ -113,7 +113,35 @@ body {
 .scale-content {
   transform: scale(0.8);
   transform-origin: top left;
-  width: 135%; /* Increased from 125% to stretch content and leave no space on right */
-  max-width: 135%; /* Ensure content stretches fully */
+  width: 120%; /* Reduced from 135% to fix spacing */
+  max-width: 120%; /* Ensure content stretches appropriately */
   overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Empty table styling */
+.empty-table-container {
+  position: relative;
+  width: 100%;
+}
+
+.blurred-table {
+  filter: blur(2px);
+  opacity: 0.6;
+}
+
+.empty-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: hsl(var(--primary));
+  text-align: center;
+  white-space: nowrap;
 }

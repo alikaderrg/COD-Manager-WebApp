@@ -112,21 +112,21 @@ export default function App() {
   const getMainContentMargin = () => {
     // For settings pages
     if (isSettingsPage) {
-      return 'ml-24'; // Increased from ml-20
+      return 'ml-20'; // Adjusted for better spacing
     }
 
     // For pages with active section and expanded subsidebar
     if (activeSection && !isSubSidebarCollapsed) {
-      return 'ml-44'; // Increased from ml-40
+      return 'ml-36'; // Adjusted for better spacing
     }
 
     // For pages with active section but collapsed subsidebar
     if (activeSection && isSubSidebarCollapsed) {
-      return 'ml-28'; // Increased from ml-24
+      return 'ml-24'; // Adjusted for better spacing
     }
 
     // Default case - just main sidebar
-    return isSidebarOpen ? 'ml-28' : 'ml-24'; // Increased from ml-24/ml-20
+    return isSidebarOpen ? 'ml-24' : 'ml-20'; // Adjusted for better spacing
   };
 
   return (

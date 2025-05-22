@@ -37,6 +37,13 @@ export function DatePickerWithRange({ className, onDateChange }) {
         setPreset(value);
         let newDateRange = { from: undefined, to: undefined };
         const today = new Date();
+
+        // Store the selected filter period in localStorage
+        localStorage.setItem('orderFilterPeriod', value === 'alltime' ? 'All Time' :
+                                                 value === 'last7' ? 'Last 7 Days' :
+                                                 value === 'last30' ? 'Last 30 Days' :
+                                                 value === 'yesterday' ? 'Yesterday' : 'Today');
+
         switch (value) {
             case "today":
                 newDateRange = { from: today, to: today };
@@ -50,6 +57,11 @@ export function DatePickerWithRange({ className, onDateChange }) {
                 break;
             case "last30":
                 newDateRange = { from: subDays(today, 29), to: today };
+                break;
+            case "alltime":
+                // Set a very old date for "from" to get all records
+                const oldDate = new Date(2000, 0, 1); // January 1, 2000
+                newDateRange = { from: oldDate, to: today };
                 break;
             case "custom":
                  // Keep current date if switching to custom, otherwise reset
@@ -95,6 +107,7 @@ export function DatePickerWithRange({ className, onDateChange }) {
                         <SelectItem value="yesterday">Yesterday</SelectItem>
                         <SelectItem value="last7">Last 7 Days</SelectItem>
                         <SelectItem value="last30">Last 30 Days</SelectItem>
+                        <SelectItem value="alltime">All Time</SelectItem>
                         <SelectItem value="custom">Custom Range</SelectItem>
                     </SelectContent>
                 </Select>

@@ -54,30 +54,101 @@ const OrdersTable = ({ orders = [], onUpdateOrder, onExportOrder, onSendWhatsApp
     });
   };
 
+  // Create a sample order for the empty state
+  const sampleOrder = {
+    id: 'ORD-123456',
+    createdAt: new Date(),
+    confirmationStatus: 'Pending',
+    warehouseStatus: 'Processing',
+    courierStatus: 'Waiting',
+    trackingId: 'TRK-123456',
+    customerName: 'Sample Customer',
+    phoneNumber: '+213 555 123456',
+    productName: 'Sample Product',
+    quantity: 1,
+    sellingPrice: 'DA 5,000',
+    exportStatus: 'Not Exported'
+  };
+
+  // Get the current filter period from localStorage or default to "Today"
+  const getCurrentFilterPeriod = () => {
+    const storedFilter = localStorage.getItem('orderFilterPeriod');
+    return storedFilter || 'Today';
+  };
+
   return (
     <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead><Checkbox onChange={handleSelectAll} /></TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead>Confirmation Status</TableHead>
-            <TableHead>In-Warehouse Status</TableHead>
-            <TableHead>Courier Status</TableHead>
-            <TableHead>Tracking ID</TableHead>
-            <TableHead>Customer</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Product</TableHead>
-            <TableHead>Qty</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Export</TableHead>
-            <TableHead>WhatsApp</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {orders.map((order) => (
+      {orders.length === 0 ? (
+        <div className="empty-table-container">
+          <div className="blurred-table">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead><Checkbox disabled /></TableHead>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Confirmation Status</TableHead>
+                  <TableHead>In-Warehouse Status</TableHead>
+                  <TableHead>Courier Status</TableHead>
+                  <TableHead>Tracking ID</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Product</TableHead>
+                  <TableHead>Qty</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Export</TableHead>
+                  <TableHead>WhatsApp</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell><Checkbox disabled /></TableCell>
+                  <TableCell>{sampleOrder.id}</TableCell>
+                  <TableCell>{format(sampleOrder.createdAt, 'MMM dd, yyyy')}</TableCell>
+                  <TableCell>{sampleOrder.confirmationStatus}</TableCell>
+                  <TableCell>{sampleOrder.warehouseStatus}</TableCell>
+                  <TableCell>{sampleOrder.courierStatus}</TableCell>
+                  <TableCell>{sampleOrder.trackingId}</TableCell>
+                  <TableCell>{sampleOrder.customerName}</TableCell>
+                  <TableCell>{sampleOrder.phoneNumber}</TableCell>
+                  <TableCell>{sampleOrder.productName}</TableCell>
+                  <TableCell>{sampleOrder.quantity}</TableCell>
+                  <TableCell>{sampleOrder.sellingPrice}</TableCell>
+                  <TableCell>{sampleOrder.exportStatus}</TableCell>
+                  <TableCell>-</TableCell>
+                  <TableCell>-</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+          <div className="empty-message">
+            No Orders Available ({getCurrentFilterPeriod()})
+          </div>
+        </div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead><Checkbox onChange={handleSelectAll} /></TableHead>
+              <TableHead>ID</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead>Confirmation Status</TableHead>
+              <TableHead>In-Warehouse Status</TableHead>
+              <TableHead>Courier Status</TableHead>
+              <TableHead>Tracking ID</TableHead>
+              <TableHead>Customer</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Product</TableHead>
+              <TableHead>Qty</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Export</TableHead>
+              <TableHead>WhatsApp</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {orders.map((order) => (
             <TableRow key={order.id}>
               <TableCell><Checkbox checked={selectedRows.has(order.id)} onChange={() => handleSelectRow(order.id)} /></TableCell>
               <TableCell>{order.id}</TableCell>
@@ -177,6 +248,7 @@ const OrdersTable = ({ orders = [], onUpdateOrder, onExportOrder, onSendWhatsApp
           ))}
         </TableBody>
       </Table>
+      )}
     </div>
   );
 };
