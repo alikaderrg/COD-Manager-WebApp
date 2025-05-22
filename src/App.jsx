@@ -108,56 +108,41 @@ export default function App() {
                       location.hash.startsWith('#/settings');
   const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(true);
 
-  // Calculate the main content margin based on sidebar states
-  const getMainContentClass = () => {
-    // Base padding and transition
-    let classes = "flex-1 p-6 transition-all duration-300 ";
-
-    // For settings page
-    if (isSettingsPage) {
-      return classes + (isSidebarOpen ? "ml-64" : "ml-16");
-    }
-
-    // For pages with subsidebar
-    if (activeSection) {
-      if (isSidebarOpen) {
-        // Main sidebar open
-        return classes + (isSubSidebarCollapsed ? "ml-80" : "ml-[20rem]");
-      } else {
-        // Main sidebar collapsed
-        return classes + (isSubSidebarCollapsed ? "ml-32" : "ml-[16rem]");
-      }
-    }
-
-    // Default case - just main sidebar
-    return classes + (isSidebarOpen ? "ml-64" : "ml-16");
-  };
-
+  // IMPORTANT: Use a balanced approach with fixed positioning
   return (
     <div className="flex min-h-screen bg-gray-50">
+      {/* Main sidebar */}
       {!isAuthPage && (
-        <Sidebar
-          isOpen={isSidebarOpen}
-          setIsOpen={setIsSidebarOpen}
-          setActiveSection={setActiveSection}
-        />
+        <div className="fixed left-0 top-0 h-full z-30">
+          <Sidebar
+            isOpen={isSidebarOpen}
+            setIsOpen={setIsSidebarOpen}
+            setActiveSection={setActiveSection}
+          />
+        </div>
       )}
 
+      {/* Sub sidebar - only shown when needed */}
       {!isAuthPage && !isSettingsPage && activeSection && (
-        <SubSidebar
-          activeSection={activeSection}
-          mainSidebarOpen={isSidebarOpen}
-          onCollapsedChange={setIsSubSidebarCollapsed}
-          isCollapsed={isSubSidebarCollapsed}
-        />
+        <div className="fixed top-0 h-full z-20" style={{ left: isSidebarOpen ? '16rem' : '4rem' }}>
+          <SubSidebar
+            activeSection={activeSection}
+            mainSidebarOpen={isSidebarOpen}
+            onCollapsedChange={setIsSubSidebarCollapsed}
+            isCollapsed={isSubSidebarCollapsed}
+          />
+        </div>
       )}
 
+      {/* Settings sidebar - only shown on settings pages */}
       {!isAuthPage && isSettingsPage && (
-        <SettingsSidebar />
+        <div className="fixed left-16 top-0 h-full z-20">
+          <SettingsSidebar />
+        </div>
       )}
 
-      {/* Main content with dynamic margin based on sidebar states */}
-      <main className={getMainContentClass()}>
+      {/* Main content with fixed margin - simple approach */}
+      <main className="flex-1 p-6 ml-64">
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
