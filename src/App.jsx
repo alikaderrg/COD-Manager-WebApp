@@ -139,7 +139,7 @@ export default function App() {
       )}
 
       {/* Main content with reduced fixed margin - NO dynamic calculations */}
-      <main className="flex-1 p-6 ml-20">
+      <main className="flex-1 p-6 ml-40">
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
