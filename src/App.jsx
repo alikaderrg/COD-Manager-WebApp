@@ -139,7 +139,7 @@ export default function App() {
       )}
 
       {/* Main content with margin based on sidebar state - using conditional class */}
-      <main className={`flex-1 p-6 ${isSidebarOpen ? 'ml-40' : 'ml-16'}`}>
+      <main className={`flex-1 p-6 ${isSidebarOpen ? 'ml-50' : 'ml-16'} scale-90 origin-top-left`}>
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
