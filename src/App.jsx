@@ -50,7 +50,7 @@ export default function App() {
   const location = useLocation();
   const [tokenChecked, setTokenChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Start with sidebar collapsed
   const [activeSection, setActiveSection] = useState('');
   const [isSubSidebarCollapsed, setIsSubSidebarCollapsed] = useState(true);
 
@@ -138,8 +138,8 @@ export default function App() {
         </div>
       )}
 
-      {/* Main content with reduced fixed margin - NO dynamic calculations */}
-      <main className="flex-1 p-6 ml-40">
+      {/* Main content with margin based on sidebar state - using conditional class */}
+      <main className={`flex-1 p-6 ${isSidebarOpen ? 'ml-40' : 'ml-16'}`}>
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
