@@ -112,21 +112,21 @@ export default function App() {
   const getMainContentMargin = () => {
     // For settings pages
     if (isSettingsPage) {
-      return 'ml-16';
+      return 'ml-20'; // Increased from ml-16
     }
 
     // For pages with active section and expanded subsidebar
     if (activeSection && !isSubSidebarCollapsed) {
-      return 'ml-36';
+      return 'ml-40'; // Increased from ml-36
     }
 
     // For pages with active section but collapsed subsidebar
     if (activeSection && isSubSidebarCollapsed) {
-      return 'ml-20';
+      return 'ml-24'; // Increased from ml-20
     }
 
     // Default case - just main sidebar
-    return isSidebarOpen ? 'ml-20' : 'ml-16';
+    return isSidebarOpen ? 'ml-24' : 'ml-20'; // Increased from ml-20/ml-16
   };
 
   return (
@@ -158,8 +158,8 @@ export default function App() {
         </div>
       )}
 
-      {/* Main content with margin that ensures content is always visible */}
-      <main className={`flex-1 p-6 ${getMainContentMargin()} w-full`}>
+      {/* Main content with margin that ensures content is always visible and scaled */}
+      <main className={`flex-1 p-6 ${getMainContentMargin()} w-full scale-content`}>
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
