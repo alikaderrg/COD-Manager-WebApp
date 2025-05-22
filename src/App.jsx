@@ -122,10 +122,10 @@ export default function App() {
       )}
 
       {!isAuthPage && !isSettingsPage && activeSection && (
-        <div className="fixed top-0 h-full z-20" style={{ left: isSidebarOpen ? '4rem' : '4rem' }}>
+        <div className="fixed top-0 h-full z-20" style={{ left: '4rem' }}>
           <SubSidebar
             activeSection={activeSection}
-            mainSidebarOpen={isSidebarOpen}
+            mainSidebarOpen={true}
             onCollapsedChange={setIsSubSidebarCollapsed}
             isCollapsed={isSubSidebarCollapsed}
           />
@@ -138,8 +138,8 @@ export default function App() {
         </div>
       )}
 
-      {/* Main content with margin based on sidebar state - using conditional class */}
-      <main className={`flex-1 p-6 ${isSidebarOpen ? 'ml-50' : 'ml-16'} scale-90 origin-top-left`}>
+      {/* Main content with optimized margin - no scaling to prevent layout issues */}
+      <main className={`flex-1 p-6 ${isSidebarOpen ? 'ml-24' : 'ml-16'} w-full`}>
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
