@@ -113,5 +113,7 @@ body {
 .scale-content {
   transform: scale(0.8);
   transform-origin: top left;
-  width: 125%; /* Compensate for scaling */
+  width: 135%; /* Increased from 125% to stretch content and leave no space on right */
+  max-width: 135%; /* Ensure content stretches fully */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
