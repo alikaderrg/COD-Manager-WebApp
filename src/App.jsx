@@ -122,7 +122,7 @@ export default function App() {
       )}
 
       {!isAuthPage && !isSettingsPage && activeSection && (
-        <div className="fixed top-0 h-full z-20" style={{ left: isSidebarOpen ? '16rem' : '4rem' }}>
+        <div className="fixed top-0 h-full z-20" style={{ left: isSidebarOpen ? '4rem' : '4rem' }}>
           <SubSidebar
             activeSection={activeSection}
             mainSidebarOpen={isSidebarOpen}
@@ -133,13 +133,13 @@ export default function App() {
       )}
 
       {!isAuthPage && isSettingsPage && (
-        <div className="fixed left-16 top-0 h-full z-20">
+        <div className="fixed left-4 top-0 h-full z-20">
           <SettingsSidebar />
         </div>
       )}
 
-      {/* Main content with FIXED margin - NO dynamic calculations */}
-      <main className="flex-1 p-6 ml-64">
+      {/* Main content with reduced fixed margin - NO dynamic calculations */}
+      <main className="flex-1 p-6 ml-20">
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />
