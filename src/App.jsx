@@ -108,6 +108,27 @@ export default function App() {
   const isSettingsPage = location.pathname.startsWith('/settings') ||
                       location.hash.startsWith('#/settings');
 
+  // Function to calculate the appropriate margin for main content
+  const getMainContentMargin = () => {
+    // For settings pages
+    if (isSettingsPage) {
+      return 'ml-16';
+    }
+
+    // For pages with active section and expanded subsidebar
+    if (activeSection && !isSubSidebarCollapsed) {
+      return 'ml-36';
+    }
+
+    // For pages with active section but collapsed subsidebar
+    if (activeSection && isSubSidebarCollapsed) {
+      return 'ml-20';
+    }
+
+    // Default case - just main sidebar
+    return isSidebarOpen ? 'ml-20' : 'ml-16';
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Fixed position sidebars */}
@@ -122,10 +143,9 @@ export default function App() {
       )}
 
       {!isAuthPage && !isSettingsPage && activeSection && (
-        <div className="fixed top-0 h-full z-20" style={{ left: '4rem' }}>
+        <div className="fixed top-0 h-full z-20" style={{ left: isSidebarOpen ? '4rem' : '4rem' }}>
           <SubSidebar
             activeSection={activeSection}
-            mainSidebarOpen={true}
             onCollapsedChange={setIsSubSidebarCollapsed}
             isCollapsed={isSubSidebarCollapsed}
           />
@@ -138,8 +158,8 @@ export default function App() {
         </div>
       )}
 
-      {/* Main content with optimized margin - no scaling to prevent layout issues */}
-      <main className={`flex-1 p-6 ${isSidebarOpen ? 'ml-24' : 'ml-16'} w-full`}>
+      {/* Main content with margin that ensures content is always visible */}
+      <main className={`flex-1 p-6 ${getMainContentMargin()} w-full`}>
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<DashboardOverview />} />

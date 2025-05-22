@@ -69,7 +69,6 @@ const sectionMap = {
 
 export default function SubSidebar({
   activeSection,
-  mainSidebarOpen,
   onCollapsedChange,
   isCollapsed = true
 }) {
@@ -93,7 +92,7 @@ export default function SubSidebar({
       transition={{ duration: 0.3 }}
       style={{
         width: isCollapsed ? '4rem' : '16rem',
-        left: mainSidebarOpen ? '16rem' : '4rem'
+        left: '4rem'
       }}
       className="bg-white border-r border-gray-200 shadow-md h-screen fixed top-0 z-20 rounded-r-xl overflow-hidden"
     >
